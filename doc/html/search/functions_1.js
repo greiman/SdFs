@@ -1,0 +1,12 @@
+var searchData=
+[
+  ['bad',['bad',['../classios.html#a7daa417c60277a4a4a452df4ad0af8e6',1,'ios']]],
+  ['begin',['begin',['../class_fs_volume.html#ae587e7c114b0af86ec0b2927300133b0',1,'FsVolume::begin()'],['../class_minimum_serial.html#a5c56beb3472bb97f949defeecacda52c',1,'MinimumSerial::begin()'],['../class_sd_base.html#aeda05797d062af42b374ea4a7bbf7c68',1,'SdBase::begin(uint8_t csPin=SS, SPISettings spiSettings=SPI_FULL_SPEED)'],['../class_sd_base.html#a5748f43d73a4272ec8dc302fb0213556',1,'SdBase::begin(SdSpiConfig spiConfig)'],['../class_sd_base.html#ab6343925e4605897d4a1c39be6705760',1,'SdBase::begin(SdioConfig sdioConfig)'],['../class_ex_fat_volume.html#a0bdc4e0cb26dfc7e535c16a69c36deaa',1,'ExFatVolume::begin()'],['../class_fat_volume.html#ad2e2aaedaeb1df7d64c4b2ce445325f6',1,'FatVolume::begin()'],['../class_sdio_card.html#afbb5ab075dfd16ceebfcba5a20e70434',1,'SdioCard::begin()'],['../class_sd_spi_card.html#acb1d0d8b9c5452cffdd5b3ae46e3eafe',1,'SdSpiCard::begin()'],['../class_sd_spi_lib_driver.html#a1b4dbeacb36a55abd7ad8d0dd1cd1a01',1,'SdSpiLibDriver::begin()'],['../class_sd_spi_alt_driver.html#a2f8bd4ead9808574c2652fe44deb149e',1,'SdSpiAltDriver::begin()']]],
+  ['boolalpha',['boolalpha',['../ios_8h.html#a0016daaaf730481e2ad36972fa7abb17',1,'ios.h']]],
+  ['buf',['buf',['../classobufstream.html#a4f699181bd3727f4288f4f95a5ce207f',1,'obufstream']]],
+  ['buffer',['buffer',['../class_fat_cache.html#a50b61cdeeff5c5dfd2a4bd7430ef19ac',1,'FatCache']]],
+  ['bytespercluster',['bytesPerCluster',['../class_ex_fat_partition.html#a1da789000f42592f9509df843fdd50c8',1,'ExFatPartition::bytesPerCluster()'],['../class_fat_partition.html#a1c3ab374b425c27bb6b6ddd55752c056',1,'FatPartition::bytesPerCluster()']]],
+  ['bytesperclustershift',['bytesPerClusterShift',['../class_ex_fat_partition.html#a64825a52f754bdcb02c8632f5fd15373',1,'ExFatPartition::bytesPerClusterShift()'],['../class_fat_partition.html#aaf43a09e71689c257f4b189ee307db4f',1,'FatPartition::bytesPerClusterShift()']]],
+  ['bytespersector',['bytesPerSector',['../class_ex_fat_partition.html#adea3221412eb4bf5c19b6311573135f8',1,'ExFatPartition::bytesPerSector()'],['../class_fat_partition.html#a1eba03c763bab44263735488435731f8',1,'FatPartition::bytesPerSector()']]],
+  ['bytespersectorshift',['bytesPerSectorShift',['../class_ex_fat_partition.html#a715f3574452c27ecf51b66208ce5e4a7',1,'ExFatPartition::bytesPerSectorShift()'],['../class_fat_partition.html#a4e513ab3fcfb95583092793116aa4df5',1,'FatPartition::bytesPerSectorShift()']]]
+];
