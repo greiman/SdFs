@@ -1,7 +1,7 @@
 // Simple test of Unicode file name.
 // Note: Unicode is only supported by the SdExFat class.
 //       No exFAT functions will be defined for char* paths.
-//       The SdFs class can not be used.
+//       The SdFs class cannot be used.
 #include "SdFs.h"
 #if USE_UNICODE_NAMES
 
@@ -37,7 +37,7 @@ void setup() {
     Serial.println("file.open failed");
     return;
   }
-  file.println("This is not unicode");
+  file.println("This is not Unicode");
   file.close();
   Serial.println("Done!");
 }

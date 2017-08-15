@@ -1,5 +1,8 @@
-// Example to demonstrate write latency for preallocated exFat files.
+// Example to demonstrate write latency for preallocated exFAT files.
 // I suggest you write a PC program to convert very large bin files.
+//
+// An exFAT SD is required. The ExFatFormatter example will format
+// smaller cards with an exFAT file system.
 //
 // The maximum data rate will depend on the quality of your SD,
 // the size of the FIFO, and using dedicated SPI.
@@ -87,7 +90,12 @@ void printRecord(Print* pr, data_t* data) {
   if (!data) {
     pr->print(F("LOG_INTERVAL_USEC,"));
     pr->println(LOG_INTERVAL_USEC);
-    pr->println(F("rec#,adc0,adc1,adc2,adc3"));
+    pr->print(F("rec#"));
+    for (size_t i = 0; i < ADC_COUNT; i++) {
+      pr->print(F(",adc"));
+      pr->print(i);
+    }
+    pr->println();
     nr = 0;
     return;
   }

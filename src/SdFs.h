@@ -33,7 +33,7 @@
 #include "FsFile.h"
 //------------------------------------------------------------------------------
 /** SdFs version YYYYMMDD */
-#define SD_FS_DATE 20170810
+#define SD_FS_DATE 20170815
 //==============================================================================
 /**
  * \class SdBase
@@ -49,7 +49,22 @@ class SdBase : public Vol {
    * \param[in] spiSettings SPI speed, mode, and bit order.
    * \return true for success else false.
    */
-  bool begin(uint8_t csPin = SS, SPISettings spiSettings = SPI_FULL_SPEED) {
+  bool begin(uint8_t csPin = SS) {
+#ifdef BUILTIN_SDCARD
+    if (csPin == BUILTIN_SDCARD) {
+      return begin(SdioConfig(FIFO_SDIO));
+    }
+#endif  // BUILTIN_SDCARD
+    return begin(SdSpiConfig(csPin, SHARED_SPI, SPI_FULL_SPEED));
+  }
+  //----------------------------------------------------------------------------
+  /** Initialize SD card and file system.
+   *
+   * \param[in] csPin SD card chip select pin.
+   * \param[in] spiSettings SPI speed, mode, and bit order.
+   * \return true for success else false.
+   */
+  bool begin(uint8_t csPin, SPISettings spiSettings) {
     return begin(SdSpiConfig(csPin, SHARED_SPI, spiSettings));
   }
   //----------------------------------------------------------------------------

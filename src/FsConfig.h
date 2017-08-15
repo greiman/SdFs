@@ -172,6 +172,11 @@
 //-----------------------------------------------------------------------------
 /** Enable SDIO driver if available. */
 #if defined(__MK64FX512__) || defined(__MK66FX1M0__)
+// Pseudo pin select for SDIO.
+#ifndef BUILTIN_SDCARD
+#define BUILTIN_SDCARD 254
+#endif  // BUILTIN_SDCARD
+// SPI for built-in card.
 #ifndef SDCARD_SPI
 #define SDCARD_SPI      SPI1
 #define SDCARD_MISO_PIN 59
@@ -180,9 +185,7 @@
 #define SDCARD_SS_PIN   62
 #endif  // SDCARD_SPI
 #define HAS_SDIO_CLASS 1
-#else  // HAS_SDIO_CLASS
-#define HAS_SDIO_CLASS 0
-#endif  // HAS_SDIO_CLASS
+#endif  // defined(__MK64FX512__) || defined(__MK66FX1M0__)
 //------------------------------------------------------------------------------
 /**
  * Determine the default SPI configuration.
@@ -206,4 +209,8 @@
 #else  // SD_HAS_CUSTOM_SPI < 2
 #define IMPLEMENT_SPI_PORT_SELECTION 1
 #endif  // SD_HAS_CUSTOM_SPI < 2
+//------------------------------------------------------------------------------
+#ifndef HAS_SDIO_CLASS
+#define HAS_SDIO_CLASS 0
+#endif  // HAS_SDIO_CLASS 
 #endif  // FsConfig_h

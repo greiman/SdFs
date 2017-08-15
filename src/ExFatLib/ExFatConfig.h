@@ -23,6 +23,6 @@
 #define USE_UNICODE_NAMES 0
 #ifndef USE_MULTI_SECTOR_IO
 #define USE_MULTI_SECTOR_IO 0
-#endif
+#endif  // USE_MULTI_SECTOR_IO
 #define READ_ONLY 0
 #endif  // ExFatConfig_h

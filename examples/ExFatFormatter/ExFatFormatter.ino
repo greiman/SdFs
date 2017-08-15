@@ -21,12 +21,12 @@ const uint8_t SD_CS_PIN = SDCARD_SS_PIN;
 // Select fastest interface.
 #if HAS_SDIO_CLASS
 // SD config for Teensy 3.6 SDIO.
-#define SD_INTERFACE SdioConfig(FIFO_SDIO)
-//#define SD_INTERFACE SdioConfig(DMA_SDIO)
+#define SD_CONFIG SdioConfig(FIFO_SDIO)
+//#define SD_CONFIG SdioConfig(DMA_SDIO)
 #elif ENABLE_DEDICATED_SPI
-#define SD_INTERFACE SdSpiConfig(SD_CS_PIN, DEDICATED_SPI)
+#define SD_CONFIG SdSpiConfig(SD_CS_PIN, DEDICATED_SPI)
 #else  // HAS_SDIO_CLASS
-#define SD_INTERFACE SdSpiConfig(SD_CS_PIN, SHARED_SPI)
+#define SD_CONFIG SdSpiConfig(SD_CS_PIN, SHARED_SPI)
 #endif  // HAS_SDIO_CLASS
 
 SdExFat sd;
@@ -62,7 +62,7 @@ void setup() {
     Serial.println(F("Exiting, 'Y' not typed."));
     return;
   }
-  if (!sd.cardBegin(SD_INTERFACE)) {
+  if (!sd.cardBegin(SD_CONFIG)) {
     error("cardBegin failed");
   }    
   if(!sd.format(&Serial)) {

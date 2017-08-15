@@ -72,11 +72,11 @@ void printField(Print* pr, char sep, uint8_t v) {
 //------------------------------------------------------------------------------  
 void printNow(Print* pr) {
   pr->print(year());
-  printField(pr, '-',month());
-  printField(pr, '-',day());  
-  printField(pr, ' ',hour());
-  printField(pr, ':',minute());
-  printField(pr, ':',second());
+  printField(pr, '-', month());
+  printField(pr, '-', day());  
+  printField(pr, ' ', hour());
+  printField(pr, ':', minute());
+  printField(pr, ':', second());
 }
 //------------------------------------------------------------------------------
 void setup() {
@@ -111,7 +111,7 @@ void setup() {
     sd.remove("RtcTest.txt");
   }
   if (!file.open("RtcTest.txt", FILE_WRITE)) {
-    Serial.println(F("file.open faied"));
+    Serial.println(F("file.open failed"));
     return;
   }
   // Print current date time to file.

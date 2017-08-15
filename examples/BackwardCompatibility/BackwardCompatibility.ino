@@ -16,8 +16,8 @@ SdFat SD;
 #endif  // USE_SD_H
 
 // Modify SD_CS_PIN for your board.
+// For Teensy 3.6 and SdFs.h use BUILTIN_SDCARD.
 #define SD_CS_PIN SS
-// For SPI with Teensy 3.6 and SdFs.h use SDCARD_SS_PIN.
 
 File myFile;
 

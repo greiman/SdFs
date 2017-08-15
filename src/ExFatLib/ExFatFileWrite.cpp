@@ -31,6 +31,10 @@ bool ExFatFile::mkdir(ExFatFile* parent, const ExChar_t* path, bool pFlag) {
   (void)pFlag;
   return false;
 }
+bool ExFatFile::preAllocate(uint64_t length) {
+  (void)length;
+  return false;
+}
 bool ExFatFile::rename(ExFatFile* dirFile, const ExChar_t* newPath) {
   (void)dirFile;
   (void)newPath;

@@ -117,7 +117,7 @@ void setup() {
     sd.remove("RtcTest.txt");
   }
   if (!file.open("RtcTest.txt", FILE_WRITE)) {
-    Serial.println(F("file.open faied"));
+    Serial.println(F("file.open failed"));
     return;
   }
   // Print current date time to file.
