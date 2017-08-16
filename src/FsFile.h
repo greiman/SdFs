@@ -433,7 +433,7 @@ class FsFile {
    * \param[in] offset The new position in bytes from the current position.
    * \return true for success or false for failure.
    */
-  bool seekcur(int64_t offset) {
+  bool seekCur(int64_t offset) {
     return m_fFile ? m_fFile->seekCur(offset) :
            m_xFile ? m_xFile->seekCur(offset) : false;
   }

@@ -251,14 +251,15 @@ static bool cardCMD6(uint32_t arg, uint8_t* status) {
 //-----------------------------------------------------------------------------
 static void enableGPIO(bool enable) {
   const uint32_t PORT_CLK = PORT_PCR_MUX(4) | PORT_PCR_DSE;
-  const uint32_t PORT_CMD_DATA = PORT_CLK | PORT_PCR_PS | PORT_PCR_PE;
-
-  PORTE_PCR0 = enable ? PORT_CMD_DATA : 0;  // SDHC_D1
-  PORTE_PCR1 = enable ? PORT_CMD_DATA : 0;  // SDHC_D0
-  PORTE_PCR2 = enable ? PORT_CLK : 0;       // SDHC_CLK
-  PORTE_PCR3 = enable ? PORT_CMD_DATA : 0;  // SDHC_CMD
-  PORTE_PCR4 = enable ? PORT_CMD_DATA : 0;  // SDHC_D3
-  PORTE_PCR5 = enable ? PORT_CMD_DATA : 0;  // SDHC_D2
+  const uint32_t PORT_CMD_DATA = PORT_CLK   | PORT_PCR_PE | PORT_PCR_PS;
+  const uint32_t PORT_PUP = PORT_PCR_MUX(1) | PORT_PCR_PE | PORT_PCR_PS;
+  
+  PORTE_PCR0 = enable ? PORT_CMD_DATA : PORT_PUP;  // SDHC_D1
+  PORTE_PCR1 = enable ? PORT_CMD_DATA : PORT_PUP;  // SDHC_D0
+  PORTE_PCR2 = enable ? PORT_CLK      : PORT_PUP;  // SDHC_CLK
+  PORTE_PCR3 = enable ? PORT_CMD_DATA : PORT_PUP;  // SDHC_CMD
+  PORTE_PCR4 = enable ? PORT_CMD_DATA : PORT_PUP;  // SDHC_D3
+  PORTE_PCR5 = enable ? PORT_CMD_DATA : PORT_PUP;  // SDHC_D2
 }
 //-----------------------------------------------------------------------------
 static void enableDmaIrs() {
