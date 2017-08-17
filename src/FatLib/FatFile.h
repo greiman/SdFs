@@ -521,7 +521,7 @@ class FatFile {
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool openRoot(FatPartition* vol);
+  bool openRoot(FatVolume* vol);
   /** Return the next available byte without consuming it.
    *
    * \return The byte if no error and not at eof else -1;
@@ -686,17 +686,6 @@ class FatFile {
    */
   bool rename(FatFile* dirFile, const char* newPath);
 
-  /** Rename a file or subdirectory.
-   *
-   * \param[in] newPath New path name for the file/directory.
-   *
-   * \return The value true is returned for success and
-   * the value false is returned for failure.
-   */
-  bool rename(const char* newPath) {
-    FatFile root;
-    return isOpen() && root.openRoot(m_part) && rename(&root, newPath);
-  }
   /** Remove a directory file.
    *
    * The directory file will be removed only if it is empty and is not the
@@ -884,11 +873,11 @@ class FatFile {
   uint32_t firstCluster() const {return m_firstCluster;}
   uint32_t firstSector() {
     if (m_firstCluster) {
-    return m_part->clusterStartSector(m_firstCluster);
+    return m_vol->clusterStartSector(m_firstCluster);
     }
     return 0;
   }
-  FatPartition* volume() const {return m_part;}
+  FatPartition* volume() const {return m_vol;}
 #endif  /////////////////////////////////////////////////////////////////////////////////////////////////
   bool addCluster();
   bool addDirCluster();
@@ -917,11 +906,11 @@ class FatFile {
   uint8_t    m_flags;            // See above for definition of m_flags bits
   uint8_t    m_lfnOrd;
   uint16_t   m_dirIndex;         // index of directory entry in dir file
-  FatPartition* m_part;          // volume where file is located
+  FatVolume* m_vol;              // volume where file is located
   uint32_t   m_dirCluster;
   uint32_t   m_curCluster;       // cluster for current file position
   uint32_t   m_curPosition;      // current file position
-  uint32_t   m_dirSector;         // sector for this files directory entry
+  uint32_t   m_dirSector;        // sector for this files directory entry
   uint32_t   m_fileSize;         // file size in bytes
   uint32_t   m_firstCluster;     // first cluster of file
 };

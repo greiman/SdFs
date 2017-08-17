@@ -3,6 +3,7 @@ var searchData=
   ['unselect',['unselect',['../class_sd_spi_lib_driver.html#a593b443dca85fe4de76ab06547233429',1,'SdSpiLibDriver::unselect()'],['../class_sd_spi_alt_driver.html#a731497cc1efc4bd0875d61b0d84979ff',1,'SdSpiAltDriver::unselect()']]],
   ['unsetf',['unsetf',['../classios__base.html#a3bf7d054a433ed15e8b984e16f630fa4',1,'ios_base']]],
   ['uppercase',['uppercase',['../classios__base.html#ade3db1fe3249e87f4c47a9a8916793d9',1,'ios_base::uppercase()'],['../ios_8h.html#af5d5e1a0effa1b500bb882feed5a2061',1,'uppercase():&#160;ios.h']]],
+  ['use_5fexfat_5fbitmap_5fcache',['USE_EXFAT_BITMAP_CACHE',['../_fs_config_8h.html#a8d3fca2607182c1ba389dd61c283a3e2',1,'FsConfig.h']]],
   ['use_5flong_5ffile_5fnames',['USE_LONG_FILE_NAMES',['../_fs_config_8h.html#a2536b194b3b007604a39e8526e108b52',1,'USE_LONG_FILE_NAMES():&#160;FsConfig.h'],['../_fat_lib_config_8h.html#a2536b194b3b007604a39e8526e108b52',1,'USE_LONG_FILE_NAMES():&#160;FatLibConfig.h']]],
   ['use_5fmulti_5fsector_5fio',['USE_MULTI_SECTOR_IO',['../_fs_config_8h.html#ae477a983188d4370faff32b07a5cfacb',1,'USE_MULTI_SECTOR_IO():&#160;FsConfig.h'],['../_fat_lib_config_8h.html#ae477a983188d4370faff32b07a5cfacb',1,'USE_MULTI_SECTOR_IO():&#160;FatLibConfig.h']]],
   ['use_5fsd_5fcrc',['USE_SD_CRC',['../_fs_config_8h.html#af2e76ffb2fdb830175abf513dd640fdd',1,'FsConfig.h']]],

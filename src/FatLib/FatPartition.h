@@ -192,6 +192,7 @@ class FatPartition {
   int32_t freeClusterCount();
   /** Initialize a FAT partition.
    *
+   * \param[in] dev BlockDevice for this partition.
    * \param[in] part The partition to be used.  Legal values for \a part are
    * 1-4 to use the corresponding partition on a device formatted with
    * a MBR, Master Boot Record, or zero if the device is formatted as
@@ -200,7 +201,7 @@ class FatPartition {
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool init(uint8_t part);
+  bool init(BlockDevice* dev, uint8_t part);
   /** \return The number of entries in the root directory for FAT16 volumes. */
   uint16_t rootDirEntryCount() const {
     return m_rootDirEntryCount;
@@ -233,7 +234,6 @@ class FatPartition {
   // Allow FatFile and FatCache access to FatPartition private functions.
   friend class FatCache;
   friend class FatFile;
-  friend class FatVolume;
 //------------------------------------------------------------------------------
   static const uint8_t  m_bytesPerSectorShift = 9;
   static const uint16_t m_bytesPerSector = 512;

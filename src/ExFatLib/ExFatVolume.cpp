@@ -19,3 +19,18 @@
  */
 #include "ExFatVolume.h"
 ExFatVolume* ExFatVolume::m_cwv = nullptr;
+//----------------------------------------------------------------------------
+bool ExFatVolume::chdir(const char *path) {
+  ExFatFile dir;
+  if (!dir.open(vwd(), path, O_READ)) {
+    goto fail;
+  }
+  if (!dir.isDir()) {
+    goto fail;
+  }
+  m_vwd = dir;
+  return true;
+
+fail:
+  return false;
+}

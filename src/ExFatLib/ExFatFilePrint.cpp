@@ -21,6 +21,7 @@
 #include "upcase.h"
 #include "../common/DebugMacros.h"
 #include "../common/PrintTemplates.h"
+#include "ExFatVolume.h"
 //-----------------------------------------------------------------------------
 size_t ExFatFile::printFileSize(print_t* pr) {
   uint64_t n = m_validLength;
@@ -41,7 +42,7 @@ size_t ExFatFile::printFileSize(print_t* pr) {
 //-----------------------------------------------------------------------------
 size_t ExFatFile::printCreateDateTime(print_t* pr) {
   DirFile_t* df = reinterpret_cast<DirFile_t*>
-                 (m_part->dirCache(&m_dirPos, FsCache::CACHE_FOR_READ));
+                 (m_vol->dirCache(&m_dirPos, FsCache::CACHE_FOR_READ));
   if (!df) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -53,7 +54,7 @@ fail:
 //-----------------------------------------------------------------------------
 size_t ExFatFile::printModifyDateTime(print_t* pr) {
   DirFile_t* df = reinterpret_cast<DirFile_t*>
-                 (m_part->dirCache(&m_dirPos, FsCache::CACHE_FOR_READ));
+                 (m_vol->dirCache(&m_dirPos, FsCache::CACHE_FOR_READ));
   if (!df) {
     DBG_FAIL_MACRO;
     goto fail;

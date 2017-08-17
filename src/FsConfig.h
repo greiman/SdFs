@@ -150,13 +150,24 @@
 //------------------------------------------------------------------------------
 /**
  * Set USE_SEPARATE_FAT_CACHE nonzero to use a second 512 byte cache
- * for FAT table entries.  This improves performance for large writes
- * that are not a multiple of 512 bytes.
+ * for FAT16/FAT32 table entries.  This improves performance for large
+ * writes that are not a multiple of 512 bytes.
  */
 #ifdef __arm__
 #define USE_SEPARATE_FAT_CACHE 1
 #else  // __arm__
 #define USE_SEPARATE_FAT_CACHE 0
+#endif  // __arm__
+//------------------------------------------------------------------------------
+/**
+ * Set USE_EXFAT_BITMAP_CACHE nonzero to use a second 512 byte cache
+ * for exFAT bitmap entries.  This improves performance for large
+ * writes that are not a multiple of 512 bytes.
+ */
+#ifdef __arm__
+#define USE_EXFAT_BITMAP_CACHE 1
+#else  // __arm__
+#define USE_EXFAT_BITMAP_CACHE 0
 #endif  // __arm__
 //------------------------------------------------------------------------------
 /**
@@ -211,6 +222,7 @@
 #endif  // SD_HAS_CUSTOM_SPI < 2
 //------------------------------------------------------------------------------
 #ifndef HAS_SDIO_CLASS
+/** Default is no SDIO. */
 #define HAS_SDIO_CLASS 0
-#endif  // HAS_SDIO_CLASS 
+#endif  // HAS_SDIO_CLASS
 #endif  // FsConfig_h

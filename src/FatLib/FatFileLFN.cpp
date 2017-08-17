@@ -19,6 +19,7 @@
  */
 #include "../common/DebugMacros.h"
 #include "FatFile.h"
+#include "FatVolume.h"
 //------------------------------------------------------------------------------
 //
 uint8_t FatFile::lfnChecksum(uint8_t* name) {
@@ -165,12 +166,12 @@ fail:
 //------------------------------------------------------------------------------
 bool FatFile::openCluster(FatFile* file) {
   if (file->m_dirCluster == 0) {
-    return openRoot(file->m_part);
+    return openRoot(file->m_vol);
   }
   memset(this, 0, sizeof(FatFile));
   m_attr = FILE_ATTR_SUBDIR;
   m_flags = O_READ;
-  m_part = file->m_part;
+  m_vol = file->m_vol;
   m_firstCluster = file->m_dirCluster;
   return true;
 }
@@ -428,7 +429,7 @@ create:
       goto fail;
     }
     // Done if more than one sector per cluster.  Max freeNeed is 21.
-    if (dirFile->m_part->sectorsPerCluster() > 1) {
+    if (dirFile->m_vol->sectorsPerCluster() > 1) {
       break;
     }
     freeFound += 16;
@@ -449,7 +450,7 @@ create:
       DBG_FAIL_MACRO;
       goto fail;
     }
-    dirFile->m_part->cacheDirty();
+    dirFile->m_vol->cacheDirty();
     ldir->order = order == lfnOrd ? FAT_ORDER_LAST_LONG_ENTRY | order : order;
     ldir->attributes = FAT_ATTRIB_LONG_NAME;
     ldir->mustBeZero1 = 0;
@@ -481,7 +482,7 @@ create:
     setLe16(dir->modifyTime, time);;
   }
   // Force write of entry to device.
-  dirFile->m_part->cacheDirty();
+  dirFile->m_vol->cacheDirty();
 
 open:
   // open entry in cache.
@@ -560,7 +561,7 @@ bool FatFile::remove() {
     goto fail;
   }
   // Free any clusters.
-  if (m_firstCluster && !m_part->freeChain(m_firstCluster)) {
+  if (m_firstCluster && !m_vol->freeChain(m_firstCluster)) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -579,7 +580,7 @@ bool FatFile::remove() {
   m_attr = FILE_ATTR_CLOSED;
 
   // Write entry to device.
-  if (!m_part->cacheSync()) {
+  if (!m_vol->cacheSync()) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -609,9 +610,9 @@ bool FatFile::remove() {
     }
     last = ldir->order & FAT_ORDER_LAST_LONG_ENTRY;
     ldir->order = FAT_NAME_DELETED;
-    m_part->cacheDirty();
+    m_vol->cacheDirty();
     if (last) {
-      if (!m_part->cacheSync()) {
+      if (!m_vol->cacheSync()) {
         DBG_FAIL_MACRO;
         goto fail;
       }

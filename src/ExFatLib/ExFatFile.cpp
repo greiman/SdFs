@@ -119,13 +119,11 @@ bool ExFatFile::parsePathName(const ExChar_t* path,
 }
 //-----------------------------------------------------------------------------
 bool ExFatFile::open(const ExChar_t* path, int oflag) {
-  return ExFatVolume::cwv() && open(ExFatVolume::cwv(), path, oflag);
+  return open(ExFatVolume::cwv(), path, oflag);
 }
 //-----------------------------------------------------------------------------
 bool ExFatFile::open(ExFatVolume* vol, const ExChar_t* path, int oflag) {
-  ExFatFile root;
-  root.openRoot(vol);
-  return open(&root, path, oflag);
+  return vol && open(vol->vwd(), path, oflag);
 }
 //------------------------------------------------------------------------------
 bool ExFatFile::open(ExFatFile* dirFile, const ExChar_t* path, uint8_t oflag) {
@@ -141,9 +139,9 @@ bool ExFatFile::open(ExFatFile* dirFile, const ExChar_t* path, uint8_t oflag) {
       path++;
     }
     if (*path == 0) {
-      return openRoot(dirFile->m_part);
+      return openRoot(dirFile->m_vol);
     }
-    if (!tmpDir.openRoot(dirFile->m_part)) {
+    if (!tmpDir.openRoot(dirFile->m_vol)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -239,7 +237,7 @@ bool ExFatFile::openRootFile(ExFatFile* dir, const ExChar_t* name,
         if (!(m_attributes & EXFAT_ATTRIB_DIRECTORY)) {
           m_attributes |= FILE_ATTR_FILE;
         }
-        m_part = dir->volume();
+        m_vol = dir->volume();
 
         m_dirPos.cluster = dir->curCluster();
         m_dirPos.position = dir->curPosition() - 32;
@@ -352,17 +350,17 @@ bool ExFatFile::openRootFile(ExFatFile* dir, const ExChar_t* name,
 
   freePos.isContiguous = dir->isContiguous();
   memset(this, 0, sizeof(ExFatFile));
-  m_part = dir->volume();
+  m_vol = dir->volume();
   m_attributes = FILE_ATTR_FILE;
   m_dirPos = freePos;
   for (uint8_t i = 0; i < freeNeed; i++) {
     if (i) {
-      if (1 != m_part->dirSeek(&freePos, 32)) {
+      if (1 != m_vol->dirSeek(&freePos, 32)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
     }
-    cache = m_part->dirCache(&freePos, FsCache::CACHE_FOR_WRITE);
+    cache = m_vol->dirCache(&freePos, FsCache::CACHE_FOR_WRITE);
     if (!cache || (cache[0] & 0x80)) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -409,14 +407,14 @@ bool ExFatFile::openRootFile(ExFatFile* dir, const ExChar_t* name,
   return false;
 }
 //-----------------------------------------------------------------------------
-bool ExFatFile::openRoot(ExFatPartition* vol) {
+bool ExFatFile::openRoot(ExFatVolume* vol) {
   if (isOpen()) {
     DBG_FAIL_MACRO;
     goto fail;
   }
   memset(this, 0, sizeof(ExFatFile));
   m_attributes = FILE_ATTR_ROOT;
-  m_part = vol;
+  m_vol = vol;
   m_flags = O_READ;
   return true;
 
@@ -433,12 +431,12 @@ size_t ExFatFile::getName(ExChar_t *name, size_t length) {
       goto fail;
   }
   for (uint8_t is = 1; is < m_setCount; is++) {
-    if (m_part->dirSeek(&pos, is == 1 ? 64: 32) != 1) {
+    if (m_vol->dirSeek(&pos, is == 1 ? 64: 32) != 1) {
       DBG_FAIL_MACRO;
       goto fail;
     }
     dn = reinterpret_cast<DirName_t*>
-         (m_part->dirCache(&pos, FsCache::CACHE_FOR_READ));
+         (m_vol->dirCache(&pos, FsCache::CACHE_FOR_READ));
     if (!dn || dn->type != EXFAT_TYPE_NAME) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -478,12 +476,12 @@ size_t ExFatFile::printName(print_t* pr) {
       goto fail;
   }
   for (uint8_t is = 1; is < m_setCount; is++) {
-    if (m_part->dirSeek(&pos, is == 1 ? 64: 32) != 1) {
+    if (m_vol->dirSeek(&pos, is == 1 ? 64: 32) != 1) {
       DBG_FAIL_MACRO;
       goto fail;
     }
     dn = reinterpret_cast<DirName_t*>
-         (m_part->dirCache(&pos, FsCache::CACHE_FOR_READ));
+         (m_vol->dirCache(&pos, FsCache::CACHE_FOR_READ));
     if (!dn || dn->type != EXFAT_TYPE_NAME) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -524,16 +522,16 @@ int ExFatFile::read(void* buf, size_t count) {
     }
   }
   while (toRead) {
-    clusterOffset = m_curPosition & m_part->clusterMask();
-    sectorOffset = clusterOffset & m_part->sectorMask();
+    clusterOffset = m_curPosition & m_vol->clusterMask();
+    sectorOffset = clusterOffset & m_vol->sectorMask();
     if (clusterOffset == 0) {
       if (m_curPosition == 0) {
         m_curCluster = isRoot()
-                       ? m_part->rootDirectoryCluster() : m_firstCluster;
+                       ? m_vol->rootDirectoryCluster() : m_firstCluster;
       } else if (isContiguous()) {
         m_curCluster++;
       } else {
-        fg = m_part->fatGet(m_curCluster, &m_curCluster);
+        fg = m_vol->fatGet(m_curCluster, &m_curCluster);
         if (fg < 0) {
           DBG_FAIL_MACRO;
           goto fail;
@@ -548,16 +546,16 @@ int ExFatFile::read(void* buf, size_t count) {
         }
       }
     }
-    sector = m_part->clusterStartSector(m_curCluster) +
-             (clusterOffset >> m_part->bytesPerSectorShift());
-    if (sectorOffset != 0 || toRead < m_part->bytesPerSector()
-                          || sector == m_part->cacheSector()) {
-      n = m_part->bytesPerSector() - sectorOffset;
+    sector = m_vol->clusterStartSector(m_curCluster) +
+             (clusterOffset >> m_vol->bytesPerSectorShift());
+    if (sectorOffset != 0 || toRead < m_vol->bytesPerSector()
+                          || sector == m_vol->dataCacheSector()) {
+      n = m_vol->bytesPerSector() - sectorOffset;
       if (n > toRead) {
         n = toRead;
       }
       // read sector to cache and copy data to caller
-      cache = m_part->cacheFill(sector, FsCache::CACHE_FOR_READ);
+      cache = m_vol->dataCacheGet(sector, FsCache::CACHE_FOR_READ);
       if (!cache) {
         DBG_FAIL_MACRO;
         goto fail;
@@ -565,33 +563,33 @@ int ExFatFile::read(void* buf, size_t count) {
       uint8_t* src = cache + sectorOffset;
       memcpy(dst, src, n);
 #if USE_MULTI_SECTOR_IO
-    } else if (toRead >= 2*m_part->bytesPerSector()) {
-      uint32_t ns = toRead >> m_part->bytesPerSectorShift();
+    } else if (toRead >= 2*m_vol->bytesPerSector()) {
+      uint32_t ns = toRead >> m_vol->bytesPerSectorShift();
       if (!isContiguous()) {
-        uint32_t maxNs = m_part->sectorsPerCluster()
-                         - (clusterOffset >> m_part->bytesPerSectorShift());
+        uint32_t maxNs = m_vol->sectorsPerCluster()
+                         - (clusterOffset >> m_vol->bytesPerSectorShift());
         if (ns > maxNs) {
           ns = maxNs;
         }
       }
-      n = ns << m_part->bytesPerSectorShift();
-      if (sector <= m_part->cacheSector()
-          && m_part->cacheSector() < (sector + ns)) {
+      n = ns << m_vol->bytesPerSectorShift();
+      if (sector <= m_vol->dataCacheSector()
+          && m_vol->dataCacheSector() < (sector + ns)) {
         // flush cache if a sector is in the cache
-        if (!m_part->cacheSyncData()) {
+        if (!m_vol->dataCacheSync()) {
           DBG_FAIL_MACRO;
           goto fail;
         }
       }
-      if (!m_part->readSectors(sector, dst, ns)) {
+      if (!m_vol->readSectors(sector, dst, ns)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
 #endif  // USE_MULTI_SECTOR_IO
     } else {
       // read single sector
-      n = m_part->bytesPerSector();
-      if (!m_part->readSector(sector, dst)) {
+      n = m_vol->bytesPerSector();
+      if (!m_vol->readSector(sector, dst)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
@@ -640,22 +638,22 @@ bool ExFatFile::seekSet(uint64_t pos) {
     }
   }
   // calculate cluster index for new position
-  nNew = (pos - 1) >> m_part->bytesPerClusterShift();
+  nNew = (pos - 1) >> m_vol->bytesPerClusterShift();
   if (isContiguous()) {
     m_curCluster = m_firstCluster + nNew;
     goto done;
   }
   // calculate cluster index for current position
-  nCur = (m_curPosition - 1) >> m_part->bytesPerClusterShift();
+  nCur = (m_curPosition - 1) >> m_vol->bytesPerClusterShift();
   if (nNew < nCur || m_curPosition == 0) {
     // must follow chain from first cluster
-    m_curCluster = isRoot() ? m_part->rootDirectoryCluster() : m_firstCluster;
+    m_curCluster = isRoot() ? m_vol->rootDirectoryCluster() : m_firstCluster;
   } else {
     // advance from curPosition
     nNew -= nCur;
   }
   while (nNew--) {
-    if (m_part->fatGet(m_curCluster, &m_curCluster) <= 0) {
+    if (m_vol->fatGet(m_curCluster, &m_curCluster) <= 0) {
       DBG_FAIL_MACRO;
       goto fail;
     }

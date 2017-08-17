@@ -32,19 +32,38 @@ class ExFatVolume : public ExFatPartition {
   }
   /**
    * Initialize an FatVolume object.
-   * \param[in] blockDev Device block driver.
+   * \param[in] dev Device block driver.
+   * \param[in] setCwv Set current working volume if true.
    * \param[in] part partition to initialize.
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool begin(BlockDevice* blockDev, uint8_t part = 0) {
-    m_blockDev = blockDev;
-    if (!(part ? init(part) : init(1) || init(0))) {
+  bool begin(BlockDevice* dev, bool setCwv = true, uint8_t part = 0) {
+    if (!(part ? init(dev, part) : init(dev, 1) || init(dev, 0))) {
       return false;
     }
-    m_cwv = this;
+    if (!chdir()) {
+      return false;
+    }
+    if (setCwv) {
+      m_cwv = this;
+    }
     return true;
   }
+  /**
+   * Set volume working directory to root.
+   * \return true for success else false.
+   */
+  bool chdir() {
+    m_vwd.close();
+    return m_vwd.openRoot(this);
+  }
+  /**
+   * Set volume working directory.
+   * \param[in] path Path for volume working directory.
+   * \return true for success or false for failure.
+   */
+  bool chdir(const char *path);
   /** \return current working volume. */
   static ExFatVolume* cwv() {return m_cwv;}
   /** Change global working volume to this volume. */
@@ -58,8 +77,8 @@ class ExFatVolume : public ExFatPartition {
    * \return true if the file exists else false.
    */
   bool exists(const ExChar_t* path) {
-    ExFatFile root;
-    return root.openRoot(this) && root.exists(path);
+    ExFatFile tmp;
+    return tmp.open(this, path, O_READ);
   }
 
 #if ENABLE_ARDUINO_FEATURES
@@ -120,15 +139,6 @@ class ExFatVolume : public ExFatPartition {
   }
 #endif  // ENABLE_ARDUINO_FEATURES
   //----------------------------------------------------------------------------
-  /** List the directory contents of the volume root.
-   *
-   * \param[in] pr Print stream for list.
-   */
-  void ls(print_t* pr) {
-    ExFatFile root;
-    root.openRoot(this);
-    root.ls(pr);
-  }
   /** List the directory contents of the root directory.
    *
    * \param[in] pr Print stream for list.
@@ -141,10 +151,8 @@ class ExFatVolume : public ExFatPartition {
    *
    * LS_R - Recursive list of subdirectories.
    */
-  void ls(print_t* pr, uint8_t flags) {
-    ExFatFile root;
-    root.openRoot(this);
-    root.ls(pr, flags);
+  void ls(print_t* pr, uint8_t flags = 0) {
+    m_vwd.ls(pr, flags);
   }
   /** List the directory contents of a directory.
    *
@@ -176,9 +184,7 @@ class ExFatVolume : public ExFatPartition {
    */
   bool mkdir(const ExChar_t* path, bool pFlag = true) {
     ExFatFile sub;
-    ExFatFile root;
-    root.openRoot(this);
-    return sub.mkdir(&root, path, pFlag);
+    return sub.mkdir(vwd(), path, pFlag);
   }
 
   /** Remove a file from the volume root directory.
@@ -208,13 +214,8 @@ class ExFatVolume : public ExFatPartition {
    * the value false is returned for failure.
    */
   bool rename(const ExChar_t* oldPath, const ExChar_t* newPath) {
-    ExFatFile root;
     ExFatFile file;
-    if (!file.open(this, oldPath, O_READ)) {
-      return false;
-    }
-    root.openRoot(this);
-    return file.rename(&root, newPath);
+    return file.open(vwd(), oldPath, O_READ) && file.rename(vwd(), newPath);
   }
   /** Remove a subdirectory from the volume's working directory.
    *
@@ -227,10 +228,7 @@ class ExFatVolume : public ExFatPartition {
    */
   bool rmdir(const ExChar_t* path) {
     ExFatFile sub;
-    if (!sub.open(this, path, O_READ)) {
-      return false;
-    }
-    return sub.rmdir();
+    return sub.open(this, path, O_READ) && sub.rmdir();
   }
   /** Truncate a file to a specified length.  The current file position
    * will be at the new EOF.
@@ -259,6 +257,9 @@ class ExFatVolume : public ExFatPartition {
 #endif  //  USE_UNICODE_NAMES
 
  private:
+  friend ExFatFile;
+  ExFatFile* vwd() {return &m_vwd;}
+  ExFatFile m_vwd;
   static ExFatVolume* m_cwv;
 };
 #endif  // ExFatVolume_h

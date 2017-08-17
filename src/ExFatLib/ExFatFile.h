@@ -337,7 +337,7 @@ class ExFatFile {
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool openRoot(ExFatPartition* vol);
+  bool openRoot(ExFatVolume* vol);
   /** Return the next available byte without consuming it.
    *
    * \return The byte if no error and not at eof else -1;
@@ -485,17 +485,7 @@ class ExFatFile {
    * the value false is returned for failure.
    */
   bool rename(ExFatFile* dirFile, const ExChar_t* newPath);
-  /** Rename a file or subdirectory.
-   *
-   * \param[in] newPath New path name for the file/directory.
-   *
-   * \return The value true is returned for success and
-   * the value false is returned for failure.
-   */
-  bool rename(const ExChar_t* newPath) {
-    ExFatFile root;
-    return isOpen() && root.openRoot(m_part) && rename(&root, newPath);
-  }
+
   /** Set the file's current position to zero. */
   void rewind() {
     seekSet(0);
@@ -592,12 +582,6 @@ class ExFatFile {
    * \a count.
    */
   size_t write(const void* buf, size_t count);
-
-  /** \return Number of files's first sector. */
-  uint32_t startSector() {
-    return m_part && m_firstCluster ?
-      m_part->clusterStartSector(m_firstCluster) : 0;
-  }
   //============================================================================
 #if USE_UNICODE_NAMES
   // Not Implemented when Unicode is selected.
@@ -625,7 +609,7 @@ class ExFatFile {
   bool parsePathName(const ExChar_t* path,
                             ExName_t* fname, const ExChar_t** ptr);
   uint32_t curCluster() const {return m_curCluster;}
-  ExFatPartition* volume() const {return m_part;}
+  ExFatVolume* volume() const {return m_vol;}
   bool syncDir();
   //----------------------------------------------------------------------------
   static const uint8_t WRITE_ERROR = 0X1;
@@ -662,7 +646,8 @@ class ExFatFile {
   uint64_t   m_validLength;
   uint32_t   m_curCluster;
   uint32_t   m_firstCluster;
-  ExFatPartition*  m_part;
+//  ExFatPartition*  m_vol;
+  ExFatVolume*  m_vol;
   DirPos_t   m_dirPos;
   uint8_t    m_setCount;
   uint8_t    m_attributes;

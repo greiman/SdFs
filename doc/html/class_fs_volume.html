@@ -110,6 +110,10 @@ Inheritance diagram for FsVolume:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae587e7c114b0af86ec0b2927300133b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#ae587e7c114b0af86ec0b2927300133b0">begin</a> (<a class="el" href="class_sd_spi_card.html">BlockDevice</a> *blockDev)</td></tr>
 <tr class="separator:ae587e7c114b0af86ec0b2927300133b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcc645df09441d40c476e4981393c944"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#abcc645df09441d40c476e4981393c944">chdir</a> ()</td></tr>
+<tr class="separator:abcc645df09441d40c476e4981393c944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4f62724d5eeaec3582594bb3b4c3e65"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#ac4f62724d5eeaec3582594bb3b4c3e65">chdir</a> (const char *path)</td></tr>
+<tr class="separator:ac4f62724d5eeaec3582594bb3b4c3e65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34a5bb7a97a081a7d74cf297f1fbee82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#a34a5bb7a97a081a7d74cf297f1fbee82">chvol</a> ()</td></tr>
 <tr class="separator:a34a5bb7a97a081a7d74cf297f1fbee82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc9731fa79598460a37f10a2e561f29c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#abc9731fa79598460a37f10a2e561f29c">clusterCount</a> ()</td></tr>
@@ -195,6 +199,61 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>FsFile</b></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="abcc645df09441d40c476e4981393c944"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FsVolume::chdir </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set volume working directory to root. </p><dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac4f62724d5eeaec3582594bb3b4c3e65"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FsVolume::chdir </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set volume working directory. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Path for volume working directory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success or false for failure. </dd></dl>
 
 </div>
 </div>
@@ -1039,7 +1098,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>FsFile</b></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:09 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

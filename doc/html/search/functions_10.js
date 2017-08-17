@@ -12,7 +12,7 @@ var searchData=
   ['sectorsperclustershift',['sectorsPerClusterShift',['../class_ex_fat_partition.html#ab1624bf02690ee06365207cb8f1d48ac',1,'ExFatPartition::sectorsPerClusterShift()'],['../class_fat_partition.html#ad526bb0c8ab512e6764df6e172d9318a',1,'FatPartition::sectorsPerClusterShift()']]],
   ['sectorsperfat',['sectorsPerFat',['../class_fat_partition.html#af35e4137fc584408582b8d510d1a2ca7',1,'FatPartition']]],
   ['seek',['seek',['../class_fs_file.html#aecf174b40f5477b6369bcd29b999b944',1,'FsFile::seek()'],['../class_stream_file.html#a773ee6f661fc689a5187f51cb5498086',1,'StreamFile::seek()']]],
-  ['seekcur',['seekCur',['../class_ex_fat_file.html#ab42494880cf229adfb0fc8edb0647686',1,'ExFatFile::seekCur()'],['../class_fat_file.html#a5812037ea30777cc350698ad26f2c73f',1,'FatFile::seekCur()'],['../class_fs_file.html#a764a80fa2235ee152c5a932b857478a8',1,'FsFile::seekcur()']]],
+  ['seekcur',['seekCur',['../class_fs_file.html#a7936ebe47525bb5d82fd2970774f2a63',1,'FsFile::seekCur()'],['../class_ex_fat_file.html#ab42494880cf229adfb0fc8edb0647686',1,'ExFatFile::seekCur()'],['../class_fat_file.html#a5812037ea30777cc350698ad26f2c73f',1,'FatFile::seekCur()']]],
   ['seekend',['seekEnd',['../class_fs_file.html#acaed959183e0461adb93f7778cb4ebd7',1,'FsFile::seekEnd()'],['../class_ex_fat_file.html#a2994a71751ed4f137f48b2e9a7d94091',1,'ExFatFile::seekEnd()'],['../class_fat_file.html#a84f677f4e75ef6fa2eb632f4cdf6b486',1,'FatFile::seekEnd()']]],
   ['seekg',['seekg',['../classistream.html#a52d637b1aeca9946085a4a72e0208aec',1,'istream::seekg(pos_type pos)'],['../classistream.html#a60dd48a3b374fb9cbdc59e1f930dea95',1,'istream::seekg(off_type off, seekdir way)']]],
   ['seekp',['seekp',['../classostream.html#a18b453d2770a8852c312cbda919c4687',1,'ostream::seekp(pos_type pos)'],['../classostream.html#af6265a5be29237517b30673667ba4213',1,'ostream::seekp(off_type off, seekdir way)']]],
@@ -33,7 +33,6 @@ var searchData=
   ['skipws',['skipws',['../ios_8h.html#a972282e5d9d894f61c8a54423858c0a4',1,'ios.h']]],
   ['spistart',['spiStart',['../class_sd_spi_card.html#aa39feb6ebb269071ac6843a424ac311c',1,'SdSpiCard']]],
   ['spistop',['spiStop',['../class_sd_spi_card.html#a1033a4a68d38f52dddf6a1764fcca3e1',1,'SdSpiCard']]],
-  ['startsector',['startSector',['../class_ex_fat_file.html#adef747cadb42e4aa2a5f699c0b2ca01a',1,'ExFatFile']]],
   ['status',['status',['../class_sd_card_interface.html#a6315bf0d5852bc24563b7977f7c7e5b4',1,'SdCardInterface::status()'],['../class_sdio_card.html#a58880a055e58410f8b22658b88622f63',1,'SdioCard::status()']]],
   ['sync',['sync',['../class_fs_file.html#a490b2b9e72903db050d256f6b4f707e3',1,'FsFile::sync()'],['../class_ex_fat_file.html#a2cb3638069afd2d01b79e5dff1a66f55',1,'ExFatFile::sync()'],['../class_fs_cache.html#a5a2c8fb432d7b7590ebb43200ca21893',1,'FsCache::sync()'],['../class_fat_file.html#a67f3dc4896c542d695e11aac927f585e',1,'FatFile::sync()'],['../class_fat_cache.html#a4d76d4f46ce5994f6fc4678a7b4f8cf1',1,'FatCache::sync()']]],
   ['syncdevice',['syncDevice',['../class_block_device_interface.html#a23e30999f1cc03da99e285cf180dbbb7',1,'BlockDeviceInterface::syncDevice()'],['../class_sdio_card.html#a1201ec7a6fa91b73a1daa584a1b055f7',1,'SdioCard::syncDevice()'],['../class_sd_spi_card.html#ac9f3bfbfc5029f93da1fa233cbe617c4',1,'SdSpiCard::syncDevice()']]]

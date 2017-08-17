@@ -89,12 +89,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>This is the complete list of members for <a class="el" href="class_fat_volume.html">FatVolume</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#ad2e2aaedaeb1df7d64c4b2ce445325f6">begin</a>(BlockDevice *blockDev, uint8_t part=0)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#aee4b385db869c73bbe616b00f870d1f8">begin</a>(BlockDevice *dev, bool setCwv=true, uint8_t part=0)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_partition.html#a1c3ab374b425c27bb6b6ddd55752c056">bytesPerCluster</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_partition.html#aaf43a09e71689c257f4b189ee307db4f">bytesPerClusterShift</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_partition.html#a1eba03c763bab44263735488435731f8">bytesPerSector</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_partition.html#a4e513ab3fcfb95583092793116aa4df5">bytesPerSectorShift</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_partition.html#abf74c1e3c714b396e6271aee304c2448">cacheClear</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#a659d921b3efd52d310a33cba69eff18b">chdir</a>()</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_fat_volume.html#ac0f6cf6ece2285af777c1fdf5cf8c219">chdir</a>(const char *path)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#a36fbc19755b066068cac7c4ca578b27b">chvol</a>()</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_partition.html#a291cd8c14e9457fedaf0e43d7060eaab">clusterCount</a>() const </td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#a06acd4a434456b6a4644ff79a0bf0a24">cwv</a>()</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
@@ -106,7 +108,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr class="even"><td class="entry"><a class="el" href="class_fat_partition.html#aa254dd5e61caa79a0701aa2729a67011">fatStartSector</a>() const </td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_partition.html#ac4b56ad1ac1435eb47600583d11de506">fatType</a>() const </td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_partition.html#ac9689f1e11f59acc5f1b21ed9bb71174">freeClusterCount</a>()</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_fat_partition.html#af1f2430248f549b8eb2fd365d03375dd">init</a>(uint8_t part)</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_fat_partition.html#a11e099fac5b3b84c958954cde24d34e6">init</a>(BlockDevice *dev, uint8_t part)</td><td class="entry"><a class="el" href="class_fat_partition.html">FatPartition</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#a9bfe18356994db77353f33bba7bd9462">ls</a>(uint8_t flags=0)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="class_fat_volume.html#ae9b54084ef582b974959a8a67587de02">ls</a>(const char *path, uint8_t flags=0)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_fat_volume.html#afede128a2a121cf9f787ce65c0dd4df7">ls</a>(print_t *pr, uint8_t flags=0)</td><td class="entry"><a class="el" href="class_fat_volume.html">FatVolume</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
@@ -129,7 +131,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:08 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -1,8 +1,8 @@
 Ignoring ../src/ExFatLib/CPPLINT.cfg; not a valid file name (cc, h, cpp, cu, cuh)
 Ignoring "../src/ExFatLib/ExFatDbg.cpp": file excluded by "C:\Users\bill\Documents\ArduinoSdFs\libraries\SdFs\src\ExFatLib\CPPLINT.cfg". File path component "ExFatDbg.cpp" matches pattern "ExFatDbg.cpp"
-../src/ExFatLib/ExFatPartition.cpp:124:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
-../src/FatLib/FatFile.h:880:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
-../src/FatLib/FatFile.h:892:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+../src/ExFatLib/ExFatFileWrite.cpp:215:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+../src/FatLib/FatFile.h:869:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+../src/FatLib/FatFile.h:881:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
 ../src/FatLib/FatPartition.h:253:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
 Ignoring ../src/common/CPPLINT.cfg; not a valid file name (cc, h, cpp, cu, cuh)
 Ignoring "../src/common/PrintTemplates.h": file excluded by "C:\Users\bill\Documents\ArduinoSdFs\libraries\SdFs\src\common\CPPLINT.cfg". File path component "PrintTemplates.h" matches pattern "PrintTemplates.h"

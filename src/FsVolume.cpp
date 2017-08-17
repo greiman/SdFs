@@ -25,12 +25,12 @@ bool FsVolume::begin(BlockDevice* blockDev) {
   m_blockDev = blockDev;
   m_fVol = nullptr;
   m_xVol = new (m_volMem) ExFatVolume;
-  if (m_xVol && m_xVol->begin(m_blockDev)) {
+  if (m_xVol && m_xVol->begin(m_blockDev, false)) {
     goto done;
   }
   m_xVol = nullptr;
   m_fVol = new (m_volMem) FatVolume;
-  if (m_fVol && m_fVol->begin(m_blockDev)) {
+  if (m_fVol && m_fVol->begin(m_blockDev, false)) {
     goto done;
   }
   m_cwv = nullptr;

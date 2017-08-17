@@ -118,8 +118,10 @@ Collaboration diagram for SdFs:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae587e7c114b0af86ec0b2927300133b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#ae587e7c114b0af86ec0b2927300133b0">begin</a> (<a class="el" href="class_sd_spi_card.html">BlockDevice</a> *blockDev)</td></tr>
 <tr class="separator:ae587e7c114b0af86ec0b2927300133b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeda05797d062af42b374ea4a7bbf7c68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#aeda05797d062af42b374ea4a7bbf7c68">begin</a> (uint8_t csPin=SS, SPISettings spiSettings=<a class="el" href="_sd_spi_driver_8h.html#a785afdf191e080f93703ad0a6f8f3d3b">SPI_FULL_SPEED</a>)</td></tr>
-<tr class="separator:aeda05797d062af42b374ea4a7bbf7c68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71f593c5a431b2cca0bd104af1a7e50a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#a71f593c5a431b2cca0bd104af1a7e50a">begin</a> (uint8_t csPin=SS)</td></tr>
+<tr class="separator:a71f593c5a431b2cca0bd104af1a7e50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afde88680c2d5c9bf396e537e164a5a04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#afde88680c2d5c9bf396e537e164a5a04">begin</a> (uint8_t csPin, SPISettings spiSettings)</td></tr>
+<tr class="separator:afde88680c2d5c9bf396e537e164a5a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5748f43d73a4272ec8dc302fb0213556"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#a5748f43d73a4272ec8dc302fb0213556">begin</a> (<a class="el" href="class_sd_spi_config.html">SdSpiConfig</a> spiConfig)</td></tr>
 <tr class="separator:a5748f43d73a4272ec8dc302fb0213556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6343925e4605897d4a1c39be6705760"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#ab6343925e4605897d4a1c39be6705760">begin</a> (<a class="el" href="class_sdio_config.html">SdioConfig</a> sdioConfig)</td></tr>
@@ -130,6 +132,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7a5e3b08f6cdd94cfaa19a1b43df6ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64cd10a3ce5ee342d0fd31738f385362"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#a64cd10a3ce5ee342d0fd31738f385362">cardBegin</a> (<a class="el" href="class_sdio_config.html">SdioConfig</a> sdioConfig)</td></tr>
 <tr class="separator:a64cd10a3ce5ee342d0fd31738f385362"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcc645df09441d40c476e4981393c944"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#abcc645df09441d40c476e4981393c944">chdir</a> ()</td></tr>
+<tr class="separator:abcc645df09441d40c476e4981393c944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4f62724d5eeaec3582594bb3b4c3e65"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#ac4f62724d5eeaec3582594bb3b4c3e65">chdir</a> (const char *path)</td></tr>
+<tr class="separator:ac4f62724d5eeaec3582594bb3b4c3e65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34a5bb7a97a081a7d74cf297f1fbee82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#a34a5bb7a97a081a7d74cf297f1fbee82">chvol</a> ()</td></tr>
 <tr class="separator:a34a5bb7a97a081a7d74cf297f1fbee82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc9731fa79598460a37f10a2e561f29c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_volume.html#abc9731fa79598460a37f10a2e561f29c">clusterCount</a> ()</td></tr>
@@ -234,7 +240,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aeda05797d062af42b374ea4a7bbf7c68"></a>
+<a class="anchor" id="a71f593c5a431b2cca0bd104af1a7e50a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -245,13 +251,45 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">bool <a class="el" href="class_sd_base.html">SdBase</a>&lt; <a class="el" href="class_fs_volume.html">FsVolume</a>  &gt;::begin </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>csPin</em> = <code>SS</code>, </td>
+          <td class="paramname"><em>csPin</em> = <code>SS</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Initialize SD card and file system.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">csPin</td><td>SD card chip select pin. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afde88680c2d5c9bf396e537e164a5a04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_sd_base.html">SdBase</a>&lt; <a class="el" href="class_fs_volume.html">FsVolume</a>  &gt;::begin </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>csPin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">SPISettings&#160;</td>
-          <td class="paramname"><em>spiSettings</em> = <code><a class="el" href="_sd_spi_driver_8h.html#a785afdf191e080f93703ad0a6f8f3d3b">SPI_FULL_SPEED</a></code>&#160;</td>
+          <td class="paramname"><em>spiSettings</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -426,6 +464,61 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="abcc645df09441d40c476e4981393c944"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FsVolume::chdir </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set volume working directory to root. </p><dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac4f62724d5eeaec3582594bb3b4c3e65"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FsVolume::chdir </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set volume working directory. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Path for volume working directory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success or false for failure. </dd></dl>
 
 </div>
 </div>
@@ -1490,7 +1583,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:09 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

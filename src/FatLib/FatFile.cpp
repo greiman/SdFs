@@ -24,7 +24,7 @@
 // Add a cluster to a file.
 bool FatFile::addCluster() {
   m_flags |= F_FILE_DIR_DIRTY;
-  return m_part->allocateCluster(m_curCluster, &m_curCluster);
+  return m_vol->allocateCluster(m_curCluster, &m_curCluster);
 }
 //------------------------------------------------------------------------------
 // Add a cluster to a directory file and zero the cluster.
@@ -46,22 +46,22 @@ bool FatFile::addDirCluster() {
     DBG_FAIL_MACRO;
     goto fail;
   }
-  sector = m_part->clusterStartSector(m_curCluster);
-  pc = m_part->cacheFetchData(sector, FatCache::CACHE_RESERVE_FOR_WRITE);
+  sector = m_vol->clusterStartSector(m_curCluster);
+  pc = m_vol->cacheFetchData(sector, FatCache::CACHE_RESERVE_FOR_WRITE);
   if (!pc) {
     DBG_FAIL_MACRO;
     goto fail;
   }
-  memset(pc, 0, m_part->bytesPerSector());
+  memset(pc, 0, m_vol->bytesPerSector());
   // zero rest of clusters
-  for (uint8_t i = 1; i < m_part->sectorsPerCluster(); i++) {
-    if (!m_part->writeSector(sector + i, pc->data)) {
+  for (uint8_t i = 1; i < m_vol->sectorsPerCluster(); i++) {
+    if (!m_vol->writeSector(sector + i, pc->data)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
   }
   // Set position to EOF to avoid inconsistent curCluster/curPosition.
-  m_curPosition += m_part->bytesPerCluster();
+  m_curPosition += m_vol->bytesPerCluster();
   return true;
 
 fail:
@@ -72,7 +72,7 @@ fail:
 // return pointer to cached entry or null for failure
 dir_t* FatFile::cacheDirEntry(uint8_t action) {
   cache_t* pc;
-  pc = m_part->cacheFetchData(m_dirSector, action);
+  pc = m_vol->cacheFetchData(m_dirSector, action);
   if (!pc) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -97,7 +97,7 @@ bool FatFile::contiguousRange(uint32_t* bgnSector, uint32_t* endSector) {
   }
   for (uint32_t c = m_firstCluster; ; c++) {
     uint32_t next;
-    int8_t fg = m_part->fatGet(c, &next);
+    int8_t fg = m_vol->fatGet(c, &next);
     if (fg < 0) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -109,9 +109,9 @@ bool FatFile::contiguousRange(uint32_t* bgnSector, uint32_t* endSector) {
         DBG_FAIL_MACRO;
         goto fail;
       }
-      *bgnSector = m_part->clusterStartSector(m_firstCluster);
-      *endSector = m_part->clusterStartSector(c)
-                  + m_part->sectorsPerCluster() - 1;
+      *bgnSector = m_vol->clusterStartSector(m_firstCluster);
+      *endSector = m_vol->clusterStartSector(c)
+                  + m_vol->sectorsPerCluster() - 1;
       return true;
     }
   }
@@ -126,9 +126,9 @@ bool FatFile::preAllocate(uint32_t length) {
     DBG_FAIL_MACRO;
     goto fail;
   }
-  need = 1 + ((length - 1) >> m_part->bytesPerClusterShift());
+  need = 1 + ((length - 1) >> m_vol->bytesPerClusterShift());
   // allocate clusters
-  if (!m_part->allocContiguous(need, &m_firstCluster)) {
+  if (!m_vol->allocContiguous(need, &m_firstCluster)) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -213,7 +213,7 @@ bool FatFile::mkdir(FatFile* parent, const char* path, bool pFlag) {
     while (isDirSeparator(*path)) {
       path++;
     }
-    if (!tmpDir.openRoot(parent->m_part)) {
+    if (!tmpDir.openRoot(parent->m_vol)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -292,8 +292,8 @@ bool FatFile::mkdir(FatFile* parent, fname_t* fname) {
   }
 
   // cache sector for '.'  and '..'
-  sector = m_part->clusterStartSector(m_firstCluster);
-  pc = m_part->cacheFetchData(sector, FatCache::CACHE_FOR_WRITE);
+  sector = m_vol->clusterStartSector(m_firstCluster);
+  pc = m_vol->cacheFetchData(sector, FatCache::CACHE_FOR_WRITE);
   if (!pc) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -307,19 +307,18 @@ bool FatFile::mkdir(FatFile* parent, fname_t* fname) {
   // copy '..' to sector
   memcpy(&pc->dir[1], &dot, sizeof(dot));
   // write first sector
-  return m_part->cacheSync();
+  return m_vol->cacheSync();
 
 fail:
   return false;
 }
 //-----------------------------------------------------------------------------
 bool FatFile::open(const char* path, uint8_t oflag) {
-  return FatVolume::cwv() && open(FatVolume::cwv(), path, oflag);
+  return open(FatVolume::cwv(), path, oflag);
 }
 //------------------------------------------------------------------------------
 bool FatFile::open(FatVolume* vol, const char* path, uint8_t oflag) {
-  FatFile root;
-  return root.openRoot(vol) && open(&root, path, oflag);
+  return vol && open(vol->vwd(), path, oflag);
 }
 //------------------------------------------------------------------------------
 bool FatFile::open(FatFile* dirFile, const char* path, uint8_t oflag) {
@@ -336,9 +335,9 @@ bool FatFile::open(FatFile* dirFile, const char* path, uint8_t oflag) {
       path++;
     }
     if (*path == 0) {
-      return openRoot(dirFile->m_part);
+      return openRoot(dirFile->m_vol);
     }
-    if (!tmpDir.openRoot(dirFile->m_part)) {
+    if (!tmpDir.openRoot(dirFile->m_vol)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -438,10 +437,10 @@ bool FatFile::openCachedEntry(FatFile* dirFile, uint16_t dirIndex,
   uint32_t firstCluster;
   memset(this, 0, sizeof(FatFile));
   // location of entry in cache
-  m_part = dirFile->m_part;
+  m_vol = dirFile->m_vol;
   m_dirIndex = dirIndex;
   m_dirCluster = dirFile->m_firstCluster;
-  dir_t* dir = reinterpret_cast<dir_t*>(m_part->cacheAddress());
+  dir_t* dir = reinterpret_cast<dir_t*>(m_vol->cacheAddress());
   dir += 0XF & dirIndex;
 
   // Must be file or subdirectory.
@@ -464,7 +463,7 @@ bool FatFile::openCachedEntry(FatFile* dirFile, uint16_t dirIndex,
   // save open flags for read/write
   m_flags = oflag & F_OFLAG;
 
-  m_dirSector = m_part->cacheSectorNumber();
+  m_dirSector = m_vol->cacheSectorNumber();
 
   // copy first cluster number for directory fields
   firstCluster = ((uint32_t)getLe16(dir->firstClusterHigh) << 16)
@@ -475,7 +474,7 @@ bool FatFile::openCachedEntry(FatFile* dirFile, uint16_t dirIndex,
       DBG_FAIL_MACRO;
       goto fail;
     }
-    if (firstCluster && !m_part->freeChain(firstCluster)) {
+    if (firstCluster && !m_vol->freeChain(firstCluster)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -549,7 +548,7 @@ fail:
   return false;
 }
 //------------------------------------------------------------------------------
-bool FatFile::openRoot(FatPartition* vol) {
+bool FatFile::openRoot(FatVolume* vol) {
   // error if file is already open
   if (isOpen()) {
     DBG_FAIL_MACRO;
@@ -557,7 +556,7 @@ bool FatFile::openRoot(FatPartition* vol) {
   }
   memset(this, 0, sizeof(FatFile));
 
-  m_part = vol;
+  m_vol = vol;
   switch (vol->fatType()) {
 #if FAT12_SUPPORT
   case 12:
@@ -612,7 +611,7 @@ int FatFile::read(void* buf, size_t nbyte) {
       nbyte = tmp32;
     }
   } else if (isRootFixed()) {
-    uint16_t tmp16 = 32*m_part->m_rootDirEntryCount - (uint16_t)m_curPosition;
+    uint16_t tmp16 = 32*m_vol->m_rootDirEntryCount - (uint16_t)m_curPosition;
     if (nbyte > tmp16) {
       nbyte = tmp16;
     }
@@ -620,20 +619,20 @@ int FatFile::read(void* buf, size_t nbyte) {
   toRead = nbyte;
   while (toRead) {
     size_t n;
-    offset = m_curPosition & m_part->sectorMask();  // offset in sector
+    offset = m_curPosition & m_vol->sectorMask();  // offset in sector
     if (isRootFixed()) {
-      sector = m_part->rootDirStart()
-               + (m_curPosition >> m_part->bytesPerSectorShift());
+      sector = m_vol->rootDirStart()
+               + (m_curPosition >> m_vol->bytesPerSectorShift());
     } else {
-      sectorOfCluster = m_part->sectorOfCluster(m_curPosition);
+      sectorOfCluster = m_vol->sectorOfCluster(m_curPosition);
       if (offset == 0 && sectorOfCluster == 0) {
         // start of new cluster
         if (m_curPosition == 0) {
           // use first cluster in file
-          m_curCluster = isRoot32() ? m_part->rootDirStart() : m_firstCluster;
+          m_curCluster = isRoot32() ? m_vol->rootDirStart() : m_firstCluster;
         } else {
           // get next cluster from FAT
-          fg = m_part->fatGet(m_curCluster, &m_curCluster);
+          fg = m_vol->fatGet(m_curCluster, &m_curCluster);
           if (fg < 0) {
             DBG_FAIL_MACRO;
             goto fail;
@@ -647,17 +646,17 @@ int FatFile::read(void* buf, size_t nbyte) {
           }
         }
       }
-      sector = m_part->clusterStartSector(m_curCluster) + sectorOfCluster;
+      sector = m_vol->clusterStartSector(m_curCluster) + sectorOfCluster;
     }
-    if (offset != 0 || toRead < m_part->bytesPerSector()
-        || sector == m_part->cacheSectorNumber()) {
+    if (offset != 0 || toRead < m_vol->bytesPerSector()
+        || sector == m_vol->cacheSectorNumber()) {
       // amount to be read from current sector
-      n = m_part->bytesPerSector() - offset;
+      n = m_vol->bytesPerSector() - offset;
       if (n > toRead) {
         n = toRead;
       }
       // read sector to cache and copy data to caller
-      pc = m_part->cacheFetchData(sector, FatCache::CACHE_FOR_READ);
+      pc = m_vol->cacheFetchData(sector, FatCache::CACHE_FOR_READ);
       if (!pc) {
         DBG_FAIL_MACRO;
         goto fail;
@@ -665,32 +664,32 @@ int FatFile::read(void* buf, size_t nbyte) {
       uint8_t* src = pc->data + offset;
       memcpy(dst, src, n);
 #if USE_MULTI_SECTOR_IO
-    } else if (toRead >= 2*m_part->bytesPerSector()) {
-      uint8_t ns = toRead >> m_part->bytesPerSectorShift();
+    } else if (toRead >= 2*m_vol->bytesPerSector()) {
+      uint8_t ns = toRead >> m_vol->bytesPerSectorShift();
       if (!isRootFixed()) {
-        uint8_t mb = m_part->sectorsPerCluster() - sectorOfCluster;
+        uint8_t mb = m_vol->sectorsPerCluster() - sectorOfCluster;
         if (mb < ns) {
           ns = mb;
         }
       }
-      n = ns << m_part->bytesPerSectorShift();
-      if (sector <= m_part->cacheSectorNumber()
-          && sector < (m_part->cacheSectorNumber() + ns)) {
+      n = ns << m_vol->bytesPerSectorShift();
+      if (sector <= m_vol->cacheSectorNumber()
+          && sector < (m_vol->cacheSectorNumber() + ns)) {
         // flush cache if a sector is in the cache
-        if (!m_part->cacheSyncData()) {
+        if (!m_vol->cacheSyncData()) {
           DBG_FAIL_MACRO;
           goto fail;
         }
       }
-      if (!m_part->readSectors(sector, dst, ns)) {
+      if (!m_vol->readSectors(sector, dst, ns)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
 #endif  // USE_MULTI_SECTOR_IO
     } else {
       // read single sector
-      n = m_part->bytesPerSector();
-      if (!m_part->readSector(sector, dst)) {
+      n = m_vol->bytesPerSector();
+      if (!m_vol->readSector(sector, dst)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
@@ -751,7 +750,7 @@ dir_t* FatFile::readDirCache(bool skipReadOk) {
     m_curPosition += 32;
   }
   // return pointer to entry
-  return reinterpret_cast<dir_t*>(m_part->cacheAddress()) + i;
+  return reinterpret_cast<dir_t*>(m_vol->cacheAddress()) + i;
 
 fail:
   return nullptr;
@@ -788,7 +787,7 @@ bool FatFile::rename(FatFile* dirFile, const char* newPath) {
     goto fail;
   }
   // Can't move file to new volume.
-  if (m_part != dirFile->m_part) {
+  if (m_vol != dirFile->m_vol) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -840,8 +839,8 @@ bool FatFile::rename(FatFile* dirFile, const char* newPath) {
   // update dot dot if directory
   if (dirCluster) {
     // get new dot dot
-    uint32_t sector = m_part->clusterStartSector(dirCluster);
-    pc = m_part->cacheFetchData(sector, FatCache::CACHE_FOR_READ);
+    uint32_t sector = m_vol->clusterStartSector(dirCluster);
+    pc = m_vol->cacheFetchData(sector, FatCache::CACHE_FOR_READ);
     if (!pc) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -849,13 +848,13 @@ bool FatFile::rename(FatFile* dirFile, const char* newPath) {
     memcpy(&entry, &pc->dir[1], sizeof(entry));
 
     // free unused cluster
-    if (!m_part->freeChain(dirCluster)) {
+    if (!m_vol->freeChain(dirCluster)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
     // store new dot dot
-    sector = m_part->clusterStartSector(m_firstCluster);
-    pc = m_part->cacheFetchData(sector, FatCache::CACHE_FOR_WRITE);
+    sector = m_vol->clusterStartSector(m_firstCluster);
+    pc = m_vol->cacheFetchData(sector, FatCache::CACHE_FOR_WRITE);
     if (!pc) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -870,7 +869,7 @@ bool FatFile::rename(FatFile* dirFile, const char* newPath) {
     DBG_FAIL_MACRO;
     goto fail;
   }
-  return m_part->cacheSync();
+  return m_vol->cacheSync();
 
 fail:
   return false;
@@ -1017,25 +1016,25 @@ bool FatFile::seekSet(uint32_t pos) {
       goto fail;
     }
   } else if (isRootFixed()) {
-    if (pos <= 32*m_part->rootDirEntryCount()) {
+    if (pos <= 32*m_vol->rootDirEntryCount()) {
       goto done;
     }
     DBG_FAIL_MACRO;
     goto fail;
   }
   // calculate cluster index for cur and new position
-  nCur = (m_curPosition - 1) >> (m_part->bytesPerClusterShift());
-  nNew = (pos - 1) >> (m_part->bytesPerClusterShift());
+  nCur = (m_curPosition - 1) >> (m_vol->bytesPerClusterShift());
+  nNew = (pos - 1) >> (m_vol->bytesPerClusterShift());
 
   if (nNew < nCur || m_curPosition == 0) {
     // must follow chain from first cluster
-    m_curCluster = isRoot32() ? m_part->rootDirStart() : m_firstCluster;
+    m_curCluster = isRoot32() ? m_vol->rootDirStart() : m_firstCluster;
   } else {
     // advance from curPosition
     nNew -= nCur;
   }
   while (nNew--) {
-    if (m_part->fatGet(m_curCluster, &m_curCluster) <= 0) {
+    if (m_vol->fatGet(m_curCluster, &m_curCluster) <= 0) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -1081,7 +1080,7 @@ bool FatFile::sync() {
     // clear directory dirty
     m_flags &= ~F_FILE_DIR_DIRTY;
   }
-  if (m_part->cacheSync()) {
+  if (m_vol->cacheSync()) {
     return true;
   }
   DBG_FAIL_MACRO;
@@ -1135,7 +1134,7 @@ bool FatFile::timestamp(uint8_t flags, uint16_t year, uint8_t month,
     setLe16(dir->modifyDate, dirDate);
     setLe16(dir->modifyTime, dirTime);
   }
-  return m_part->cacheSync();
+  return m_vol->cacheSync();
 
 fail:
   return false;
@@ -1153,14 +1152,14 @@ bool FatFile::truncate() {
   }
   if (m_curCluster) {
     toFree = 0;
-    int8_t fg = m_part->fatGet(m_curCluster, &toFree);
+    int8_t fg = m_vol->fatGet(m_curCluster, &toFree);
     if (fg < 0) {
       DBG_FAIL_MACRO;
       goto fail;
     }
     if (fg) {
       // current cluster is end of chain
-      if (!m_part->fatPutEOC(m_curCluster)) {
+      if (!m_vol->fatPutEOC(m_curCluster)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
@@ -1170,7 +1169,7 @@ bool FatFile::truncate() {
     m_firstCluster = 0;
   }
   if (toFree) {
-    if (!m_part->freeChain(toFree)) {
+    if (!m_vol->freeChain(toFree)) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -1216,12 +1215,12 @@ size_t FatFile::write(const void* buf, size_t nbyte) {
     goto fail;
   }
   while (nToWrite) {
-    uint8_t sectorOfCluster = m_part->sectorOfCluster(m_curPosition);
-    uint16_t sectorOffset = m_curPosition & m_part->sectorMask();
+    uint8_t sectorOfCluster = m_vol->sectorOfCluster(m_curPosition);
+    uint16_t sectorOffset = m_curPosition & m_vol->sectorMask();
     if (sectorOfCluster == 0 && sectorOffset == 0) {
       // start of new cluster
       if (m_curCluster != 0) {
-        int8_t fg = m_part->fatGet(m_curCluster, &m_curCluster);
+        int8_t fg = m_vol->fatGet(m_curCluster, &m_curCluster);
         if (fg < 0) {
           DBG_FAIL_MACRO;
           goto fail;
@@ -1247,13 +1246,13 @@ size_t FatFile::write(const void* buf, size_t nbyte) {
       }
     }
     // sector for data write
-    uint32_t sector = m_part->clusterStartSector(m_curCluster)
+    uint32_t sector = m_vol->clusterStartSector(m_curCluster)
                       + sectorOfCluster;
 
-    if (sectorOffset != 0 || nToWrite < m_part->bytesPerSector()) {
+    if (sectorOffset != 0 || nToWrite < m_vol->bytesPerSector()) {
       // partial sector - must use cache
       // max space in sector
-      n = m_part->bytesPerSector() - sectorOffset;
+      n = m_vol->bytesPerSector() - sectorOffset;
       // lesser of space and amount to write
       if (n > nToWrite) {
         n = nToWrite;
@@ -1266,46 +1265,46 @@ size_t FatFile::write(const void* buf, size_t nbyte) {
         // rewrite part of sector
         cacheOption = FatCache::CACHE_FOR_WRITE;
       }
-      pc = m_part->cacheFetchData(sector, cacheOption);
+      pc = m_vol->cacheFetchData(sector, cacheOption);
       if (!pc) {
         DBG_FAIL_MACRO;
         goto fail;
       }
       uint8_t* dst = pc->data + sectorOffset;
       memcpy(dst, src, n);
-      if (m_part->bytesPerSector() == (n + sectorOffset)) {
+      if (m_vol->bytesPerSector() == (n + sectorOffset)) {
         // Force write if sector is full - improves large writes.
-        if (!m_part->cacheSyncData()) {
+        if (!m_vol->cacheSyncData()) {
           DBG_FAIL_MACRO;
           goto fail;
         }
       }
 #if USE_MULTI_SECTOR_IO
-    } else if (nToWrite >= 2*m_part->bytesPerSector()) {
+    } else if (nToWrite >= 2*m_vol->bytesPerSector()) {
       // use multiple sector write command
-      uint8_t maxSectors = m_part->sectorsPerCluster() - sectorOfCluster;
-      uint8_t nSector = nToWrite >> m_part->bytesPerSectorShift();
+      uint8_t maxSectors = m_vol->sectorsPerCluster() - sectorOfCluster;
+      uint8_t nSector = nToWrite >> m_vol->bytesPerSectorShift();
       if (nSector > maxSectors) {
         nSector = maxSectors;
       }
-      n = nSector << m_part->bytesPerSectorShift();
-      if (sector <= m_part->cacheSectorNumber()
-          && sector < (m_part->cacheSectorNumber() + nSector)) {
+      n = nSector << m_vol->bytesPerSectorShift();
+      if (sector <= m_vol->cacheSectorNumber()
+          && sector < (m_vol->cacheSectorNumber() + nSector)) {
         // invalidate cache if sector is in cache
-        m_part->cacheInvalidate();
+        m_vol->cacheInvalidate();
       }
-      if (!m_part->writeSectors(sector, src, nSector)) {
+      if (!m_vol->writeSectors(sector, src, nSector)) {
         DBG_FAIL_MACRO;
         goto fail;
       }
 #endif  // USE_MULTI_SECTOR_IO
     } else {
       // use single sector write command
-      n = m_part->bytesPerSector();
-      if (m_part->cacheSectorNumber() == sector) {
-        m_part->cacheInvalidate();
+      n = m_vol->bytesPerSector();
+      if (m_vol->cacheSectorNumber() == sector) {
+        m_vol->cacheInvalidate();
       }
-      if (!m_part->writeSector(sector, src)) {
+      if (!m_vol->writeSector(sector, src)) {
         DBG_FAIL_MACRO;
         goto fail;
       }

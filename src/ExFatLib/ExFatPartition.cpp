@@ -27,7 +27,7 @@ void FsCache::invalidate() {
   m_sector = 0XFFFFFFFF;
 }
 //-----------------------------------------------------------------------------
-uint8_t* FsCache::fill(uint32_t sector, uint8_t option) {
+uint8_t* FsCache::get(uint32_t sector, uint8_t option) {
   if (!m_blockDev) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -67,7 +67,7 @@ fail:
   return false;
 }
 //=============================================================================
-bool ExFatPartition::init(uint8_t part) {
+bool ExFatPartition::init(BlockDevice* dev, uint8_t part) {
   uint32_t volStart = 0;
   uint8_t *cache;
   pbs_t* pbs;
@@ -75,8 +75,9 @@ bool ExFatPartition::init(uint8_t part) {
   MbrSector_t* mbr;
   MbrPart_t* mp;
 
-  m_cache.init(m_blockDev);
-  cache = m_cache.fill(0, FsCache::CACHE_FOR_READ);
+  m_blockDev = dev;
+  cacheInit(m_blockDev);
+  cache = dataCacheGet(0, FsCache::CACHE_FOR_READ);
   if (part > 4 || !cache) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -89,7 +90,7 @@ bool ExFatPartition::init(uint8_t part) {
       goto fail;
     }
     volStart = getLe32(mp->relativeSectors);
-    cache = m_cache.fill(volStart, FsCache::CACHE_FOR_READ);
+    cache = dataCacheGet(volStart, FsCache::CACHE_FOR_READ);
     if (!cache) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -113,6 +114,9 @@ bool ExFatPartition::init(uint8_t part) {
   m_sectorsPerClusterShift = bpb->sectorsPerClusterShift;
   m_bytesPerCluster = 1UL << (m_bytesPerSectorShift + m_sectorsPerClusterShift);
   m_clusterMask = m_bytesPerCluster - 1;
+  // Set m_bitmapStart to first free cluster.
+  m_bitmapStart = 0;
+  bitmapFind(0, 1);
   return true;
 
  fail:
@@ -121,8 +125,10 @@ bool ExFatPartition::init(uint8_t part) {
 //-----------------------------------------------------------------------------
 // return 0 if error, 1 if no space, else start cluster.
 uint32_t ExFatPartition::bitmapFind(uint32_t cluster, uint32_t count) {
-  ////////////////////  fix for search start  ///////////////////////////////////////////////////////
-  uint32_t start = (cluster -= 2) >= m_clusterCount ? 0 : cluster;
+  uint32_t start = cluster ? cluster - 2 : m_bitmapStart;
+  if (start >= m_clusterCount) {
+    start = 0;
+  }
   uint32_t endAlloc = start;
   uint32_t bgnAlloc = start;
   uint16_t sectorSize = 1 << m_bytesPerSectorShift;
@@ -132,7 +138,7 @@ uint32_t ExFatPartition::bitmapFind(uint32_t cluster, uint32_t count) {
   while (true) {
     uint32_t sector = m_clusterHeapStartSector +
                      (endAlloc >> (m_bytesPerSectorShift + 3));
-    cache = m_cache.fill(sector, FsCache::CACHE_FOR_READ);
+    cache = bitmapCacheGet(sector, FsCache::CACHE_FOR_READ);
     if (!cache) {
       return 0;
     }
@@ -141,6 +147,10 @@ uint32_t ExFatPartition::bitmapFind(uint32_t cluster, uint32_t count) {
         endAlloc++;
         if (!(mask & cache[i])) {
           if ((endAlloc - bgnAlloc) == count) {
+            if (cluster == 0 && count == 1) {
+              // Start at found sector.  bitmapModify may increase this.
+              m_bitmapStart = bgnAlloc;
+            }
             return bgnAlloc + 2;
           }
         } else {
@@ -165,20 +175,30 @@ uint32_t ExFatPartition::bitmapFind(uint32_t cluster, uint32_t count) {
 bool ExFatPartition::bitmapModify(uint32_t cluster,
                                   uint32_t count, bool value) {
   uint32_t sector;
+  uint32_t start = cluster - 2;
   size_t i;
   uint8_t* cache;
   uint8_t mask;
   cluster -= 2;
-  if ((cluster + count) > m_clusterCount) {
+  if ((start + count) > m_clusterCount) {
     DBG_FAIL_MACRO;
     goto fail;
   }
-  mask = 1 << (cluster & 7);
+  if (value) {
+    if (start  <= m_bitmapStart && m_bitmapStart < (start + count)) {
+      m_bitmapStart = (start + count) < m_clusterCount ? start + count : 0;
+    }
+  } else {
+    if (start < m_bitmapStart) {
+      m_bitmapStart = start;
+    }
+  }
+  mask = 1 << (start & 7);
   sector = m_clusterHeapStartSector +
-                   (cluster >> (m_bytesPerSectorShift + 3));
-  i = (cluster >> 3) & m_sectorMask;
+                   (start >> (m_bytesPerSectorShift + 3));
+  i = (start >> 3) & m_sectorMask;
   while (true) {
-    cache = m_cache.fill(sector++, FsCache::CACHE_FOR_WRITE);
+    cache = bitmapCacheGet(sector++, FsCache::CACHE_FOR_WRITE);
     if (!cache) {
       DBG_FAIL_MACRO;
       goto fail;
@@ -217,7 +237,7 @@ uint32_t ExFatPartition::chainSize(uint32_t cluster) {
 uint8_t* ExFatPartition::dirCache(DirPos_t* pos, uint8_t options) {
   uint32_t sector = clusterStartSector(pos->cluster);
   sector += (m_clusterMask & pos->position) >> m_bytesPerSectorShift;
-  uint8_t* cache = cacheFill(sector, options);
+  uint8_t* cache = dataCacheGet(sector, options);
   return cache ? cache + (pos->position & m_sectorMask) : nullptr;
 }
 //-----------------------------------------------------------------------------
@@ -250,9 +270,8 @@ uint32_t next;
     return -1;
   }
   sector = m_fatStartSector + (cluster >> (m_bytesPerSectorShift - 2));
-//  sector = m_fatStartSector + (cluster >> m_uint32PerSectorShift);
 
-  cache = m_cache.fill(sector, FsCache::CACHE_FOR_READ);
+  cache = dataCacheGet(sector, FsCache::CACHE_FOR_READ);
   if (!cache) {
     return -1;
   }
@@ -273,7 +292,7 @@ bool ExFatPartition::fatPut(uint32_t cluster, uint32_t value) {
     goto fail;
   }
   sector = m_fatStartSector + (cluster >> (m_bytesPerSectorShift - 2));
-  cache = m_cache.fill(sector, FsCache::CACHE_FOR_WRITE);
+  cache = dataCacheGet(sector, FsCache::CACHE_FOR_WRITE);
   if (!cache) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -322,7 +341,7 @@ uint32_t ExFatPartition::freeClusterCount() {
   uint8_t* cache;
 
   while (true) {
-    cache = m_cache.fill(sector++, FsCache::CACHE_FOR_READ);
+    cache = dataCacheGet(sector++, FsCache::CACHE_FOR_READ);
     if (!cache) {
       return 0;
     }

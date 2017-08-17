@@ -111,8 +111,10 @@ Collaboration diagram for SdBase&lt; Vol &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aeda05797d062af42b374ea4a7bbf7c68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#aeda05797d062af42b374ea4a7bbf7c68">begin</a> (uint8_t csPin=SS, SPISettings spiSettings=<a class="el" href="_sd_spi_driver_8h.html#a785afdf191e080f93703ad0a6f8f3d3b">SPI_FULL_SPEED</a>)</td></tr>
-<tr class="separator:aeda05797d062af42b374ea4a7bbf7c68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71f593c5a431b2cca0bd104af1a7e50a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#a71f593c5a431b2cca0bd104af1a7e50a">begin</a> (uint8_t csPin=SS)</td></tr>
+<tr class="separator:a71f593c5a431b2cca0bd104af1a7e50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afde88680c2d5c9bf396e537e164a5a04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#afde88680c2d5c9bf396e537e164a5a04">begin</a> (uint8_t csPin, SPISettings spiSettings)</td></tr>
+<tr class="separator:afde88680c2d5c9bf396e537e164a5a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5748f43d73a4272ec8dc302fb0213556"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#a5748f43d73a4272ec8dc302fb0213556">begin</a> (<a class="el" href="class_sd_spi_config.html">SdSpiConfig</a> spiConfig)</td></tr>
 <tr class="separator:a5748f43d73a4272ec8dc302fb0213556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6343925e4605897d4a1c39be6705760"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sd_base.html#ab6343925e4605897d4a1c39be6705760">begin</a> (<a class="el" href="class_sdio_config.html">SdioConfig</a> sdioConfig)</td></tr>
@@ -144,7 +146,7 @@ class SdBase&lt; Vol &gt;</h3>
 
 <p>base SD file system template class. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aeda05797d062af42b374ea4a7bbf7c68"></a>
+<a class="anchor" id="a71f593c5a431b2cca0bd104af1a7e50a"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -157,13 +159,47 @@ template&lt;class Vol&gt; </div>
           <td class="memname">bool <a class="el" href="class_sd_base.html">SdBase</a>&lt; Vol &gt;::begin </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>csPin</em> = <code>SS</code>, </td>
+          <td class="paramname"><em>csPin</em> = <code>SS</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Initialize SD card and file system.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">csPin</td><td>SD card chip select pin. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afde88680c2d5c9bf396e537e164a5a04"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Vol&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_sd_base.html">SdBase</a>&lt; Vol &gt;::begin </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>csPin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">SPISettings&#160;</td>
-          <td class="paramname"><em>spiSettings</em> = <code><a class="el" href="_sd_spi_driver_8h.html#a785afdf191e080f93703ad0a6f8f3d3b">SPI_FULL_SPEED</a></code>&#160;</td>
+          <td class="paramname"><em>spiSettings</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -568,7 +604,7 @@ template&lt;class Vol&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:09 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

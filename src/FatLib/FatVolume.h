@@ -34,24 +34,42 @@ class FatVolume : public  FatPartition {
  public:
   /**
    * Initialize an FatVolume object.
-   * \param[in] blockDev Device block driver.
+   * \param[in] dev Device block driver.
+   * \param[in] setCwv Set current working volume if true.
    * \param[in] part partition to initialize.
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool begin(BlockDevice* blockDev, uint8_t part = 0) {
-    m_blockDev = blockDev;
-    if (!(part ? init(part) : init(1) || init(0))) {
+  bool begin(BlockDevice* dev, bool setCwv = true, uint8_t part = 0) {
+    if (!(part ? init(dev, part) : init(dev, 1) || init(dev, 0))) {
       return false;
     }
-    m_cwv = this;
+    if (!chdir()) {
+      return false;
+    }
+    if (setCwv) {
+      m_cwv = this;
+    }
     return true;
   }
-  /** Change global current working volume to this volume */
+  /** Change global current working volume to this volume. */
   void chvol() {m_cwv = this;}
   /** \return current working volume. */
   static FatVolume* cwv() {return m_cwv;}
-
+  /**
+   * Set volume working directory to root.
+   * \return true for success else false.
+   */
+  bool chdir() {
+    m_vwd.close();
+    return m_vwd.openRoot(this);
+  }
+  /**
+   * Set volume working directory.
+   * \param[in] path Path for volume working directory.
+   * \return true for success or false for failure.
+   */
+  bool chdir(const char *path);
 
 #if ENABLE_ARDUINO_FEATURES
    /** List the directory contents of the root directory to Serial.
@@ -132,9 +150,7 @@ class FatVolume : public  FatPartition {
    * LS_R - Recursive list of subdirectories.
    */
   void ls(print_t* pr, uint8_t flags = 0) {
-    FatFile root;
-    root.openRoot(this);
-    root.ls(pr, flags);
+    m_vwd.ls(pr, flags);
   }
   //----------------------------------------------------------------------------
   /** List the directory contents of a directory.
@@ -167,9 +183,8 @@ class FatVolume : public  FatPartition {
    * the value false is returned for failure.
    */
   bool mkdir(const char* path, bool pFlag = true) {
-    FatFile root;
     FatFile sub;
-    return root.openRoot(this) && sub.mkdir(&root, path, pFlag);
+    return sub.mkdir(vwd(), path, pFlag);
   }
   //----------------------------------------------------------------------------
   /** Remove a file from the volume root directory.
@@ -200,10 +215,8 @@ class FatVolume : public  FatPartition {
    * the value false is returned for failure.
    */
   bool rename(const char *oldPath, const char *newPath) {
-    FatFile root;
     FatFile file;
-    return root.openRoot(this) &&
-           file.open(this, oldPath, O_READ) && file.rename(&root, newPath);
+    return file.open(vwd(), oldPath, O_READ) && file.rename(vwd(), newPath);
   }
   //----------------------------------------------------------------------------
   /** Remove a subdirectory from the volume's working directory.
@@ -217,10 +230,7 @@ class FatVolume : public  FatPartition {
    */
   bool rmdir(const char* path) {
     FatFile sub;
-    if (!sub.open(this, path, O_READ)) {
-      return false;
-    }
-    return sub.rmdir();
+    return sub.open(this, path, O_READ) && sub.rmdir();
   }
   //----------------------------------------------------------------------------
   /** Truncate a file to a specified length.  The current file position
@@ -234,10 +244,7 @@ class FatVolume : public  FatPartition {
    */
   bool truncate(const char* path, uint32_t length) {
     FatFile file;
-    if (!file.open(this, path, O_WRITE)) {
-      return false;
-    }
-    return file.truncate(length);
+    return file.open(this, path, O_WRITE) && file.truncate(length);
   }
   /** Wipe all data from the volume. You must reinitialize the volume before
    *  accessing it again.
@@ -249,6 +256,9 @@ class FatVolume : public  FatPartition {
   }
 
  private:
+  friend FatFile;
+  FatFile* vwd() {return &m_vwd;}
+  FatFile m_vwd;
   static FatVolume* m_cwv;
 };
 #endif  // FatVolume_h

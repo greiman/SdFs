@@ -148,6 +148,8 @@ Macros</h2></td></tr>
 <tr class="separator:ac2865dac8fdbb4fff47105db32ddf05b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a838861a01379e94361148d22e62b1977"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_fs_config_8h.html#a838861a01379e94361148d22e62b1977">SD_HAS_CUSTOM_SPI</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a838861a01379e94361148d22e62b1977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d3fca2607182c1ba389dd61c283a3e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_fs_config_8h.html#a8d3fca2607182c1ba389dd61c283a3e2">USE_EXFAT_BITMAP_CACHE</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:a8d3fca2607182c1ba389dd61c283a3e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2536b194b3b007604a39e8526e108b52"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_fs_config_8h.html#a2536b194b3b007604a39e8526e108b52">USE_LONG_FILE_NAMES</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a2536b194b3b007604a39e8526e108b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae477a983188d4370faff32b07a5cfacb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_fs_config_8h.html#ae477a983188d4370faff32b07a5cfacb">USE_MULTI_SECTOR_IO</a>&#160;&#160;&#160;1</td></tr>
@@ -246,7 +248,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enable SDIO driver if available. </p>
+<p>Default is no SDIO. </p>
 
 </div>
 </div>
@@ -285,7 +287,20 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Determine the default SPI configuration. </p>
+<p>Enable SDIO driver if available. Determine the default SPI configuration. </p>
+
+</div>
+</div>
+<a class="anchor" id="a8d3fca2607182c1ba389dd61c283a3e2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define USE_EXFAT_BITMAP_CACHE&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set USE_EXFAT_BITMAP_CACHE nonzero to use a second 512 byte cache for exFAT bitmap entries. This improves performance for large writes that are not a multiple of 512 bytes. </p>
 
 </div>
 </div>
@@ -348,7 +363,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set USE_SEPARATE_FAT_CACHE nonzero to use a second 512 byte cache for FAT table entries. This improves performance for large writes that are not a multiple of 512 bytes. </p>
+<p>Set USE_SEPARATE_FAT_CACHE nonzero to use a second 512 byte cache for FAT16/FAT32 table entries. This improves performance for large writes that are not a multiple of 512 bytes. </p>
 
 </div>
 </div>
@@ -395,7 +410,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:08 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

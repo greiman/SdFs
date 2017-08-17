@@ -60,6 +60,44 @@ use of the FAT table.  In this case the contiguous flag is set in the
 directory entry.  This allows an entire file to be written as one large
 multi-block write.
 
+\section SDPath Paths and Working Directories
+
+Relative paths in %SdFs are resolved in a manner similar to Windows.
+
+Each instance of SdFat, SdExFat, and SdFs has a current directory.  
+This directory is called the volume working directory, vwd.  
+Initially this directory is the root directory for the volume.
+
+The volume working directory is changed by calling the chdir(path).
+
+The call sd.chdir("/2014") will change the volume working directory
+for sd to "/2014", assuming "/2014" exists.
+
+Relative paths for member functions are resolved by starting at
+the volume working directory.
+
+For example, the call sd.mkdir("April") will create the directory
+"/2014/April" assuming the volume working directory is "/2014".
+
+There is current working directory, cwd, that is used to resolve paths
+for file.open() calls.
+
+For a single SD card, the current working directory is always the volume
+working directory for that card.
+
+For multiple SD cards the current working directory is set to the volume
+working directory of a card by calling the chvol() member function.
+The chvol() call is like the Windows \<drive letter>: command.
+
+The call sd2.chvol() will set the current working directory to the volume
+working directory for sd2.
+
+If the volume working directory for sd2 is "/music" the call
+
+file.open("BigBand.wav", O_READ);
+
+will open "/music/BigBand.wav" on sd2.
+
 \section Install Installation
 
 You must manually install %SdFs by copying the %SdFs folder from the download
@@ -141,9 +179,11 @@ BackwardCompatibility - Demonstrate SD.h compatibility with %SdFs.h.
 
 bench - A read/write benchmark.
 
+DirectoryFunctions - Use of chdir(), ls(), mkdir(), and rmdir().
+
 %ExFatFormatter - Produces optimal exFAT format for smaller SD cards.
 
-ExFatLogger - A data-logger optimized for exFAT featues.
+ExFatLogger - A data-logger optimized for exFAT features.
 
 ExFatUnicodeTest - Test program for Unicode file names.
 

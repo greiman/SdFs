@@ -13,7 +13,7 @@ var searchData=
   ['openmode',['openmode',['../classios__base.html#aaa192ec0dccc43050715553a34644523',1,'ios_base']]],
   ['opennext',['openNext',['../class_fs_file.html#a3d3c44f8d1a661b8b00561610ab27437',1,'FsFile::openNext()'],['../class_ex_fat_file.html#a8eb7086a9081b104133809872447c21b',1,'ExFatFile::openNext()'],['../class_fat_file.html#a8034c4649eb0d26715b1a8a69e73d9d0',1,'FatFile::openNext()']]],
   ['opennextfile',['openNextFile',['../class_ex_file.html#a9bb51c216a0e8d8cc473c07360ceb47c',1,'ExFile::openNextFile()'],['../class_file.html#acd72000ab1f6a1ce73ac8fbdc854ae0c',1,'File::openNextFile()'],['../class_stream_file.html#ab6f2d643ca0c1e50764a847d433b0b96',1,'StreamFile::openNextFile()']]],
-  ['openroot',['openRoot',['../class_ex_fat_file.html#a835d07227bec47c84e39cb71148b3071',1,'ExFatFile::openRoot()'],['../class_fat_file.html#aa03ba48476d23eeaead3966e77da5d4a',1,'FatFile::openRoot()']]],
+  ['openroot',['openRoot',['../class_ex_fat_file.html#af664c1da1bfa0bb5f6eb933bc25f757e',1,'ExFatFile::openRoot()'],['../class_fat_file.html#a7e0c0548fed3a69e7284b91b694439d4',1,'FatFile::openRoot()']]],
   ['operator_20bool',['operator bool',['../class_fs_file.html#aa985c47806ef8a57589b82a71b593a37',1,'FsFile::operator bool()'],['../class_minimum_serial.html#a73a1a2a92604ecb8507afde0022aedd8',1,'MinimumSerial::operator bool()'],['../class_ex_fat_file.html#aa1abbd813f27d488f0ff439ccbc9ca98',1,'ExFatFile::operator bool()'],['../class_fat_file.html#acd141c43d03cf790b3b9806f3b059e77',1,'FatFile::operator bool()']]],
   ['operator_20const_20void_20_2a',['operator const void *',['../classios.html#a8c2e7e42e31d3d7898a51c0bc837b2a3',1,'ios']]],
   ['operator_21',['operator!',['../classios.html#a1ae2d4f1ccdfcaaef6a3a8ac9e28c267',1,'ios']]],

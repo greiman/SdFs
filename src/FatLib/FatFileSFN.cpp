@@ -247,7 +247,7 @@ bool FatFile::open(FatFile* dirFile, fname_t* fname, uint8_t oflag) {
   setLe16(dir->modifyDate, date);
 
   // Force write of entry to device.
-  dirFile->m_part->cacheDirty();
+  dirFile->m_vol->cacheDirty();
 
   // open entry in cache.
   return openCachedEntry(dirFile, index, oflag, 0);
@@ -268,7 +268,7 @@ bool FatFile::remove() {
     goto fail;
   }
   // Free any clusters.
-  if (m_firstCluster && !m_part->freeChain(m_firstCluster)) {
+  if (m_firstCluster && !m_vol->freeChain(m_firstCluster)) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -285,7 +285,7 @@ bool FatFile::remove() {
   m_attr = FILE_ATTR_CLOSED;
 
   // Write entry to device.
-  return m_part->cacheSync();
+  return m_vol->cacheSync();
 
 fail:
   return false;

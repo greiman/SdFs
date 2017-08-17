@@ -136,7 +136,7 @@ static void printHex(Print* pr, uint32_t val) {
 }
 //-----------------------------------------------------------------------------
 void ExFatPartition::dmpSector(Print* pr, uint32_t sector) {
-  uint8_t* cache = m_cache.fill(sector, FsCache::CACHE_FOR_READ);
+  uint8_t* cache = dataCacheGet(sector, FsCache::CACHE_FOR_READ);
   if (!cache) {
     pr->println(F("dmpSector failed"));
     return;
@@ -164,7 +164,7 @@ void ExFatPartition::dmpFat(Print* pr, uint32_t start, uint32_t count) {
   uint32_t cluster = 128*start;
   pr->println(F("FAT:"));
   for (uint32_t i = 0; i < count; i++) {
-    uint32_t *cache = (uint32_t*)m_cache.fill(sector + i, FsCache::CACHE_FOR_READ);
+    uint32_t *cache = (uint32_t*)dataCacheGet(sector + i, FsCache::CACHE_FOR_READ);
     if (!cache) {
       pr->println(F("cache read failed"));
       return;
@@ -200,7 +200,7 @@ void ExFatPartition::printFat(Print* pr) {
 }
 //-----------------------------------------------------------------------------
 bool ExFatPartition::printVolInfo(Print* pr) {
-  MbrSector_t* mbr = (MbrSector_t*)m_cache.fill(0, FsCache::CACHE_FOR_READ);
+  MbrSector_t* mbr = (MbrSector_t*)dataCacheGet(0, FsCache::CACHE_FOR_READ);
   if (!mbr) {
     pr->println(F("read mbr failed"));
     return false;
@@ -212,7 +212,7 @@ bool ExFatPartition::printVolInfo(Print* pr) {
     pr->print(F("bad partition size"));
     return false;
   }
-  pbs_t* pbs = (pbs_t*)m_cache.fill(volStart, FsCache::CACHE_FOR_READ);
+  pbs_t* pbs = (pbs_t*)dataCacheGet(volStart, FsCache::CACHE_FOR_READ);
   if (!pbs) {
     pr->println(F("read pbs failed"));
     return false;
@@ -324,7 +324,7 @@ void ExFatPartition::checkUpcase(Print* pr) {
   uint32_t size = 0;
   DirUpcase_t* dir;
   sector = clusterStartSector(m_rootDirectoryCluster);
-  dir = (DirUpcase_t*)m_cache.fill(sector, FsCache::CACHE_FOR_READ);
+  dir = (DirUpcase_t*)dataCacheGet(sector, FsCache::CACHE_FOR_READ);
   if (!dir) {
     pr->println(F("read root failed"));
     return;
@@ -342,7 +342,7 @@ void ExFatPartition::checkUpcase(Print* pr) {
   }
   for (size_t i = 0; i < size/2; i++) {
     if ((i%256) == 0) {
-      upcase = m_cache.fill(sector++, FsCache::CACHE_FOR_READ);
+      upcase = dataCacheGet(sector++, FsCache::CACHE_FOR_READ);
       if (!upcase) {
         pr->println(F("read upcase failed"));
         return;
@@ -398,16 +398,8 @@ bool ExFatPartition::printDir(Print* pr, ExFatFile* file) {
   uint8_t  setCount = 0;
   uint8_t  nUnicode;
 
-//#define RAW_ROOT
+#define RAW_ROOT
 #ifndef RAW_ROOT
-  ExFatFile root;
-  if (!file) {
-    if (!root.openRoot(this)) {
-      pr->println(F("openRoot failed"));
-      return false;
-    }
-    file = &root;
-  }
   while (1) {
     uint8_t buf[32];
     if (file->read(buf, 32) != 32) {
@@ -420,7 +412,7 @@ bool ExFatPartition::printDir(Print* pr, ExFatFile* file) {
   for (uint32_t iDir = 0; iDir < nDir; iDir++) {
     size_t i = iDir%16;
     if (i == 0) {
-      dir = (DirGeneric_t*)m_cache.fill(sector++, FsCache::CACHE_FOR_READ);
+      dir = (DirGeneric_t*)dataCacheGet(sector++, FsCache::CACHE_FOR_READ);
       if (!dir) {
         return false;
       }
@@ -520,7 +512,7 @@ void ExFatPartition::printUpcase(Print* pr) {
   uint32_t checksum = 0;
   DirUpcase_t* dir;
   sector = clusterStartSector(m_rootDirectoryCluster);
-  dir = (DirUpcase_t*)m_cache.fill(sector, FsCache::CACHE_FOR_READ);
+  dir = (DirUpcase_t*)dataCacheGet(sector, FsCache::CACHE_FOR_READ);
   if (!dir) {
     pr->println(F("read root failed"));
     return;
@@ -538,7 +530,7 @@ void ExFatPartition::printUpcase(Print* pr) {
   }
   for (uint16_t i = 0; i < size/2; i++) {
     if ((i%256) == 0) {
-      upcase = m_cache.fill(sector++, FsCache::CACHE_FOR_READ);
+      upcase = dataCacheGet(sector++, FsCache::CACHE_FOR_READ);
       if (!upcase) {
         pr->println(F("read upcase failed"));
         return;

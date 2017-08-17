@@ -197,8 +197,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab0e7075062c89f356441f80fc64d03e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8034c4649eb0d26715b1a8a69e73d9d0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a8034c4649eb0d26715b1a8a69e73d9d0">openNext</a> (<a class="el" href="class_fat_file.html">FatFile</a> *dirFile, uint8_t oflag=O_READ)</td></tr>
 <tr class="separator:a8034c4649eb0d26715b1a8a69e73d9d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa03ba48476d23eeaead3966e77da5d4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#aa03ba48476d23eeaead3966e77da5d4a">openRoot</a> (<a class="el" href="class_fat_partition.html">FatPartition</a> *vol)</td></tr>
-<tr class="separator:aa03ba48476d23eeaead3966e77da5d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e0c0548fed3a69e7284b91b694439d4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a7e0c0548fed3a69e7284b91b694439d4">openRoot</a> (<a class="el" href="class_fat_volume.html">FatVolume</a> *vol)</td></tr>
+<tr class="separator:a7e0c0548fed3a69e7284b91b694439d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd141c43d03cf790b3b9806f3b059e77"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#acd141c43d03cf790b3b9806f3b059e77">operator bool</a> ()</td></tr>
 <tr class="separator:acd141c43d03cf790b3b9806f3b059e77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05b7136b887539426856c623869aa3a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#ac05b7136b887539426856c623869aa3a">peek</a> ()</td></tr>
@@ -241,8 +241,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a75d3276f0b02b03e863afafe5731fedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b42f2454ff462555c07ea094a92a1e0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a4b42f2454ff462555c07ea094a92a1e0">rename</a> (<a class="el" href="class_fat_file.html">FatFile</a> *dirFile, const char *newPath)</td></tr>
 <tr class="separator:a4b42f2454ff462555c07ea094a92a1e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cebcac13c1f4c9de7a055ae73133599"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a4cebcac13c1f4c9de7a055ae73133599">rename</a> (const char *newPath)</td></tr>
-<tr class="separator:a4cebcac13c1f4c9de7a055ae73133599"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aac6e0b3cb08fc8b8668e916a8b0ca5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a5aac6e0b3cb08fc8b8668e916a8b0ca5">rewind</a> ()</td></tr>
 <tr class="separator:a5aac6e0b3cb08fc8b8668e916a8b0ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9515bac181d33e7f0125e88fa2ccd283"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a9515bac181d33e7f0125e88fa2ccd283">rmdir</a> ()</td></tr>
@@ -1525,14 +1523,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>FatVolume</b></td></
 
 </div>
 </div>
-<a class="anchor" id="aa03ba48476d23eeaead3966e77da5d4a"></a>
+<a class="anchor" id="a7e0c0548fed3a69e7284b91b694439d4"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">bool FatFile::openRoot </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_fat_partition.html">FatPartition</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="class_fat_volume.html">FatVolume</a> *&#160;</td>
           <td class="paramname"><em>vol</em></td><td>)</td>
           <td></td>
         </tr>
@@ -2223,38 +2221,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>FatVolume</b></td></
 
 </div>
 </div>
-<a class="anchor" id="a4cebcac13c1f4c9de7a055ae73133599"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool FatFile::rename </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>newPath</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Rename a file or subdirectory.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">newPath</td><td>New path name for the file/directory.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="a5aac6e0b3cb08fc8b8668e916a8b0ca5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2659,7 +2625,7 @@ Modify and access timestamps may be overwritten if a date time callback function
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:08 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

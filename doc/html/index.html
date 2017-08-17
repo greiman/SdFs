@@ -95,6 +95,21 @@ exFAT Features</h1>
 <p>Better support for large flash pages with boundary alignment offsets for the FAT table and data region.</p>
 <p>exFAT files have two separate 64-bit length fields. The DataLength field indicate how much space is allocate to the file. The ValidDataLength field indicates how much actual data has been written to the file.</p>
 <p>An exFAT file can be contiguous with pre-allocate clusters and bypass the use of the FAT table. In this case the contiguous flag is set in the directory entry. This allows an entire file to be written as one large multi-block write.</p>
+<h1><a class="anchor" id="SDPath"></a>
+Paths and Working Directories</h1>
+<p>Relative paths in SdFs are resolved in a manner similar to Windows.</p>
+<p>Each instance of <a class="el" href="class_sd_fat.html" title="SD file system class for FAT volumes. ">SdFat</a>, <a class="el" href="class_sd_ex_fat.html" title="SD file system class for exFAT volumes. ">SdExFat</a>, and <a class="el" href="class_sd_fs.html" title="SD file system class for FAT16, FAT32, and exFAT volumes. ">SdFs</a> has a current directory. This directory is called the volume working directory, vwd. Initially this directory is the root directory for the volume.</p>
+<p>The volume working directory is changed by calling the chdir(path).</p>
+<p>The call sd.chdir("/2014") will change the volume working directory for sd to "/2014", assuming "/2014" exists.</p>
+<p>Relative paths for member functions are resolved by starting at the volume working directory.</p>
+<p>For example, the call sd.mkdir("April") will create the directory "/2014/April" assuming the volume working directory is "/2014".</p>
+<p>There is current working directory, cwd, that is used to resolve paths for file.open() calls.</p>
+<p>For a single SD card, the current working directory is always the volume working directory for that card.</p>
+<p>For multiple SD cards the current working directory is set to the volume working directory of a card by calling the chvol() member function. The chvol() call is like the Windows &lt;drive letter&gt;: command.</p>
+<p>The call sd2.chvol() will set the current working directory to the volume working directory for sd2.</p>
+<p>If the volume working directory for sd2 is "/music" the call</p>
+<p>file.open("BigBand.wav", O_READ);</p>
+<p>will open "/music/BigBand.wav" on sd2.</p>
 <h1><a class="anchor" id="Install"></a>
 Installation</h1>
 <p>You must manually install SdFs by copying the SdFs folder from the download package to the Arduino libraries folder in your sketch folder.</p>
@@ -129,8 +144,9 @@ Examples</h1>
 <p>AvrAdcLogger - Fast AVR ADC logger using Timer/ADC interrupts.</p>
 <p>BackwardCompatibility - Demonstrate SD.h compatibility with SdFs.h.</p>
 <p>bench - A read/write benchmark.</p>
+<p>DirectoryFunctions - Use of chdir(), ls(), mkdir(), and rmdir().</p>
 <p>ExFatFormatter - Produces optimal exFAT format for smaller SD cards.</p>
-<p>ExFatLogger - A data-logger optimized for exFAT featues.</p>
+<p>ExFatLogger - A data-logger optimized for exFAT features.</p>
 <p>ExFatUnicodeTest - Test program for Unicode file names.</p>
 <p>OpenNext - Open all files in the root dir and print their filename.</p>
 <p>ReadCsvFil - Function to read a CSV text file one field at a time.</p>
@@ -143,7 +159,7 @@ Examples</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:09 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

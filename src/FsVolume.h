@@ -74,7 +74,23 @@ class FsVolume {
     return m_fVol ? m_fVol->sectorsPerCluster() :
            m_xVol ? m_xVol->sectorsPerCluster() : 0;
   }
-
+  /**
+   * Set volume working directory to root.
+   * \return true for success else false.
+   */
+  bool chdir() {
+    return m_fVol ? m_fVol->chdir() :
+           m_xVol ? m_xVol->chdir() : false;
+  }
+  /**
+   * Set volume working directory.
+   * \param[in] path Path for volume working directory.
+   * \return true for success or false for failure.
+   */
+    bool chdir(const char* path) {
+    return m_fVol ? m_fVol->chdir(path) :
+           m_xVol ? m_xVol->chdir(path) : false;
+  }
   /** free dynamic memory and end access to volume */
   void end() {
     m_fVol = nullptr;

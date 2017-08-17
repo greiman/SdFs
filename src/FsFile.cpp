@@ -75,6 +75,9 @@ bool FsFile::mkdir(FsFile* dir, const char* path, bool pFlag) {
 }
 //-----------------------------------------------------------------------------
 bool FsFile::open(FsVolume* vol, const char* path, uint8_t oflag) {
+  if (!vol) {
+    return false;
+  }
   close();
   if (vol->m_fVol) {
     m_fFile = new (m_fileMem) FatFile;

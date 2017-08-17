@@ -46,7 +46,6 @@ class SdBase : public Vol {
   /** Initialize SD card and file system.
    *
    * \param[in] csPin SD card chip select pin.
-   * \param[in] spiSettings SPI speed, mode, and bit order.
    * \return true for success else false.
    */
   bool begin(uint8_t csPin = SS) {
@@ -139,7 +138,7 @@ class SdBase : public Vol {
    * \param[in] pr Print destination.
    */
   void printFatType(Print* pr) {
-    if (Vol::fatType() == 64) {
+    if (Vol::fatType() == EXFAT_TYPE) {
       pr->print(F("exFAT"));
     } else {
       pr->print(F("FAT"));

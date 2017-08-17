@@ -93,7 +93,7 @@ class FsCache {
    * \param[in] sector Sector to read.
    * \param[in] option mode for cached sector.
    * \return Address of cached sector. */
-  uint8_t* fill(uint32_t sector, uint8_t option);
+  uint8_t* get(uint32_t sector, uint8_t option);
   /** Write current sector if dirty.
    * \return true for success else false.
    */
@@ -128,7 +128,7 @@ class ExFatPartition {
    * \return A pointer to the cache buffer or zero if an error occurs.
    */
   uint8_t* cacheClear() {
-    return m_cache.clear();
+    return m_dataCache.clear();
   }
   /** \return the cluster count for the partition. */
   uint32_t clusterCount() {return m_clusterCount;}
@@ -139,11 +139,11 @@ class ExFatPartition {
   /** \return the FAT start sector number. */
   uint32_t fatStartSector() {return m_fatStartSector;}
   /** \return Type for exFAT partition */
-  uint8_t fatType() const {return 64;}
+  uint8_t fatType() const {return EXFAT_TYPE;}
   /** \return the free cluster count. */
   uint32_t freeClusterCount();
   /** Initialize a exFAT partition.
-   *
+   * \param[in] dev The blockDevice for the partition.
    * \param[in] part The partition to be used.  Legal values for \a part are
    * 1-4 to use the corresponding partition on a device formatted with
    * a MBR, Master Boot Record, or zero if the device is formatted as
@@ -152,7 +152,7 @@ class ExFatPartition {
    * \return The value true is returned for success and
    * the value false is returned for failure.
    */
-  bool init(uint8_t part);
+  bool init(BlockDevice* dev, uint8_t part);
   /** \return the root directory start cluster number. */
   uint32_t rootDirectoryCluster() {return m_rootDirectoryCluster;}
   /** \return the root directory length. */
@@ -176,18 +176,38 @@ class ExFatPartition {
   //----------------------------------------------------------------------------
  private:
   friend class ExFatFile;
-  friend class ExFatVolume;
-  //---------------------------------------------------------------------------
   uint32_t bitmapFind(uint32_t cluster, uint32_t count);
   bool bitmapModify(uint32_t cluster, uint32_t count, bool value);
-  void cacheDirty() {m_cache.dirty();}
-  void cacheInvalidate() {m_cache.invalidate();}
-  uint8_t* cacheFill(uint32_t sector, uint8_t option) {
-    return m_cache.fill(sector, option);
+  //----------------------------------------------------------------------------
+  // Cache functions.
+  uint8_t* bitmapCacheGet(uint32_t sector, uint8_t option) {
+#if USE_EXFAT_BITMAP_CACHE
+    return m_bitmapCache.get(sector, option);
+#else  // USE_EXFAT_BITMAP_CACHE
+    return m_dataCache.get(sector, option);
+#endif  // USE_EXFAT_BITMAP_CACHE
   }
-  uint32_t cacheSector() {return m_cache.sector();}
-  bool cacheSync() {return m_cache.sync() && syncDevice();}
-  bool cacheSyncData() {return m_cache.sync();}
+  void cacheInit(BlockDevice* dev) {
+#if USE_EXFAT_BITMAP_CACHE
+    m_bitmapCache.init(dev);
+#endif  // USE_EXFAT_BITMAP_CACHE
+    m_dataCache.init(dev);
+  }
+  bool cacheSync() {
+#if USE_EXFAT_BITMAP_CACHE
+    return m_bitmapCache.sync() && m_dataCache.sync() && syncDevice();
+#else  // USE_EXFAT_BITMAP_CACHE
+    return m_dataCache.sync() && syncDevice();
+#endif  // USE_EXFAT_BITMAP_CACHE
+  }
+  void dataCacheDirty() {m_dataCache.dirty();}
+  void dataCacheInvalidate() {m_dataCache.invalidate();}
+  uint8_t* dataCacheGet(uint32_t sector, uint8_t option) {
+    return m_dataCache.get(sector, option);
+  }
+  uint32_t dataCacheSector() {return m_dataCache.sector();}
+  bool dataCacheSync() {return m_dataCache.sync();}
+  //----------------------------------------------------------------------------
   uint32_t clusterMask() {return m_clusterMask;}
   uint32_t clusterStartSector(uint32_t cluster) {
     return m_clusterHeapStartSector +
@@ -220,7 +240,11 @@ class ExFatPartition {
   static const uint16_t m_bytesPerSector = 512;
   static const uint16_t m_sectorMask = 0x1FF;
   //----------------------------------------------------------------------------
-  FsCache  m_cache;
+#if USE_EXFAT_BITMAP_CACHE
+  FsCache  m_bitmapCache;
+#endif  // USE_EXFAT_BITMAP_CACHE
+  FsCache  m_dataCache;
+  uint32_t m_bitmapStart;
   uint32_t m_fatStartSector;
   uint32_t m_fatLength;
   uint32_t m_clusterHeapStartSector;

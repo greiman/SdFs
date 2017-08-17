@@ -116,8 +116,8 @@ Collaboration diagram for FatVolume:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad2e2aaedaeb1df7d64c4b2ce445325f6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#ad2e2aaedaeb1df7d64c4b2ce445325f6">begin</a> (<a class="el" href="class_sd_spi_card.html">BlockDevice</a> *blockDev, uint8_t part=0)</td></tr>
-<tr class="separator:ad2e2aaedaeb1df7d64c4b2ce445325f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee4b385db869c73bbe616b00f870d1f8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#aee4b385db869c73bbe616b00f870d1f8">begin</a> (<a class="el" href="class_sd_spi_card.html">BlockDevice</a> *dev, bool setCwv=true, uint8_t part=0)</td></tr>
+<tr class="separator:aee4b385db869c73bbe616b00f870d1f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c3ab374b425c27bb6b6ddd55752c056"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#a1c3ab374b425c27bb6b6ddd55752c056">bytesPerCluster</a> ()</td></tr>
 <tr class="separator:a1c3ab374b425c27bb6b6ddd55752c056"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf43a09e71689c257f4b189ee307db4f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#aaf43a09e71689c257f4b189ee307db4f">bytesPerClusterShift</a> ()</td></tr>
@@ -128,6 +128,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4e513ab3fcfb95583092793116aa4df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf74c1e3c714b396e6271aee304c2448"><td class="memItemLeft" align="right" valign="top"><a class="el" href="unioncache__t.html">cache_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#abf74c1e3c714b396e6271aee304c2448">cacheClear</a> ()</td></tr>
 <tr class="separator:abf74c1e3c714b396e6271aee304c2448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a659d921b3efd52d310a33cba69eff18b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#a659d921b3efd52d310a33cba69eff18b">chdir</a> ()</td></tr>
+<tr class="separator:a659d921b3efd52d310a33cba69eff18b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0f6cf6ece2285af777c1fdf5cf8c219"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#ac0f6cf6ece2285af777c1fdf5cf8c219">chdir</a> (const char *path)</td></tr>
+<tr class="separator:ac0f6cf6ece2285af777c1fdf5cf8c219"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36fbc19755b066068cac7c4ca578b27b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#a36fbc19755b066068cac7c4ca578b27b">chvol</a> ()</td></tr>
 <tr class="separator:a36fbc19755b066068cac7c4ca578b27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a291cd8c14e9457fedaf0e43d7060eaab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#a291cd8c14e9457fedaf0e43d7060eaab">clusterCount</a> () const </td></tr>
@@ -146,8 +150,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac4b56ad1ac1435eb47600583d11de506"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9689f1e11f59acc5f1b21ed9bb71174"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#ac9689f1e11f59acc5f1b21ed9bb71174">freeClusterCount</a> ()</td></tr>
 <tr class="separator:ac9689f1e11f59acc5f1b21ed9bb71174"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1f2430248f549b8eb2fd365d03375dd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#af1f2430248f549b8eb2fd365d03375dd">init</a> (uint8_t part)</td></tr>
-<tr class="separator:af1f2430248f549b8eb2fd365d03375dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11e099fac5b3b84c958954cde24d34e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_partition.html#a11e099fac5b3b84c958954cde24d34e6">init</a> (<a class="el" href="class_sd_spi_card.html">BlockDevice</a> *dev, uint8_t part)</td></tr>
+<tr class="separator:a11e099fac5b3b84c958954cde24d34e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bfe18356994db77353f33bba7bd9462"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#a9bfe18356994db77353f33bba7bd9462">ls</a> (uint8_t flags=0)</td></tr>
 <tr class="separator:a9bfe18356994db77353f33bba7bd9462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9b54084ef582b974959a8a67587de02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_volume.html#ae9b54084ef582b974959a8a67587de02">ls</a> (const char *path, uint8_t flags=0)</td></tr>
@@ -195,7 +199,7 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Integration class for the FatLib library. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ad2e2aaedaeb1df7d64c4b2ce445325f6"></a>
+<a class="anchor" id="aee4b385db869c73bbe616b00f870d1f8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -206,7 +210,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">bool FatVolume::begin </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_sd_spi_card.html">BlockDevice</a> *&#160;</td>
-          <td class="paramname"><em>blockDev</em>, </td>
+          <td class="paramname"><em>dev</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>setCwv</em> = <code>true</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -228,7 +238,8 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Initialize an <a class="el" href="class_fat_volume.html" title="Integration class for the FatLib library. ">FatVolume</a> object. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">blockDev</td><td>Device block driver. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dev</td><td>Device block driver. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">setCwv</td><td>Set current working volume if true. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">part</td><td>partition to initialize. </td></tr>
   </table>
   </dd>
@@ -357,6 +368,53 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a659d921b3efd52d310a33cba69eff18b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FatVolume::chdir </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set volume working directory to root. </p><dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac0f6cf6ece2285af777c1fdf5cf8c219"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FatVolume::chdir </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set volume working directory. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Path for volume working directory. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success or false for failure. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a36fbc19755b066068cac7c4ca578b27b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -377,7 +435,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Change global current working volume to this volume </p>
+<p>Change global current working volume to this volume. </p>
 
 </div>
 </div>
@@ -625,7 +683,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af1f2430248f549b8eb2fd365d03375dd"></a>
+<a class="anchor" id="a11e099fac5b3b84c958954cde24d34e6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -635,9 +693,19 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">bool FatPartition::init </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>part</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_sd_spi_card.html">BlockDevice</a> *&#160;</td>
+          <td class="paramname"><em>dev</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>part</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -649,6 +717,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Initialize a FAT partition.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dev</td><td>BlockDevice for this partition. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">part</td><td>The partition to be used. Legal values for <em>part</em> are 1-4 to use the corresponding partition on a device formatted with a MBR, Master Boot Record, or zero if the device is formatted as a super floppy with the FAT boot sector in sector zero.</td></tr>
   </table>
   </dd>
@@ -1321,7 +1390,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2017 10:00:08 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

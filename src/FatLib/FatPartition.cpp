@@ -421,10 +421,11 @@ fail:
   return -1;
 }
 //------------------------------------------------------------------------------
-bool FatPartition::init(uint8_t part) {
+bool FatPartition::init(BlockDevice* dev, uint8_t part) {
   uint32_t clusterCount;
   uint32_t totalSectors;
   uint32_t volumeStartSector = 0;
+  m_blockDev = dev;
   pbs_t* pbs;
   BpbFat32_t* bpb;
   MbrSector_t* mbr;
