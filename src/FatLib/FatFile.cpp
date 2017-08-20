@@ -768,6 +768,10 @@ fail:
   return false;
 }
 //------------------------------------------------------------------------------
+bool FatFile::rename(const char* newPath) {
+  return rename(m_vol->vwd(), newPath);
+}
+//------------------------------------------------------------------------------
 bool FatFile::rename(FatFile* dirFile, const char* newPath) {
   dir_t entry;
   uint32_t dirCluster = 0;

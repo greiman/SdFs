@@ -75,6 +75,7 @@ bool ExFatPartition::init(BlockDevice* dev, uint8_t part) {
   MbrSector_t* mbr;
   MbrPart_t* mp;
 
+  m_fatType = 0;
   m_blockDev = dev;
   cacheInit(m_blockDev);
   cache = dataCacheGet(0, FsCache::CACHE_FOR_READ);
@@ -117,6 +118,7 @@ bool ExFatPartition::init(BlockDevice* dev, uint8_t part) {
   // Set m_bitmapStart to first free cluster.
   m_bitmapStart = 0;
   bitmapFind(0, 1);
+  m_fatType = EXFAT_TYPE;
   return true;
 
  fail:

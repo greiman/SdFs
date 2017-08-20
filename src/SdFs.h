@@ -85,6 +85,9 @@ class SdBase : public Vol {
     return cardBegin(sdioConfig) && Vol::begin(m_card);
   }
   //----------------------------------------------------------------------------
+  /** \return Pointer to SD card object. */
+  SdCard* card() {return m_card;}
+  //----------------------------------------------------------------------------
   /** Initialize SD card in SPI mode.
    *
    * \param[in] spiConfig SPI configuration.
@@ -104,17 +107,8 @@ class SdBase : public Vol {
     m_card = m_cardFactory.newCard(sdioConfig);
     return m_card && !m_card->errorCode();
   }
-  //----------------------------------------------------------------------------
-  /** Initialize file system after call to cardBegin.
-   *
-   * \return true for success else false.
-   */
-  bool volumeBegin() {
-     return Vol::begin(m_card);
-  }
-  //----------------------------------------------------------------------------
-  /** \return Pointer to SD card object. */
-  SdCard* card() {return m_card;}
+
+
   //----------------------------------------------------------------------------
   /** \return SD card error code. */
   uint8_t sdErrorCode() {
@@ -127,13 +121,80 @@ class SdBase : public Vol {
   /** \return SD card error data. */
   uint8_t sdErrorData() {return m_card ? m_card->errorData() : 0;}
   //----------------------------------------------------------------------------
-  /** Print error info and halt.
+  /** %Print error info and halt.
    *
    * \param[in] pr Print destination.
    */
-  void errorHalt(Print* pr) {printSdErrorCode(pr); SysCall::halt();}
+  void errorHalt(Print* pr) {
+    if (sdErrorCode()) {
+      pr->print(F("SdError: 0X"));
+      pr->print(sdErrorCode(), HEX);
+      pr->print(F(",0X"));
+      pr->println(sdErrorData(), HEX);
+    } else if (!Vol::fatType()) {
+      pr->println(F("Check SD format."));
+    }
+    SysCall::halt();
+  }
   //----------------------------------------------------------------------------
-  /** Print volum FAT/exFAT type.
+  /** %Print error info to Serial and halt. */
+  void errorHalt() {errorHalt(&Serial);}
+  //----------------------------------------------------------------------------
+  /** %Print error info and halt.
+   *
+   * \param[in] pr Print destination.
+   * \param[in] msg Message to print.
+   */
+  void errorHalt(Print* pr, const char* msg) {
+    pr->print(F("error: "));
+    pr->println(msg);
+    errorHalt(pr);
+  }
+  //----------------------------------------------------------------------------
+  /** %Print msg and halt.
+   *
+   * \param[in] pr Print destination.
+   * \param[in] msg Message to print.
+   */
+  void errorHalt(Print* pr, const __FlashStringHelper* msg) {
+    pr->print(F("error: "));
+    pr->println(msg);
+    errorHalt(pr);
+  }
+  //----------------------------------------------------------------------------
+  /** %Print msg to Serial and halt.
+   *
+   * \param[in] msg Message to print.
+   */
+  void errorHalt(const __FlashStringHelper* msg) {
+    errorHalt(&Serial, msg);
+  }
+  //----------------------------------------------------------------------------
+  /** %Print error info and halt.
+   *
+   * \param[in] msg Message to print.
+   */
+  void errorHalt(const char* msg) {errorHalt(&Serial, msg);}
+  //----------------------------------------------------------------------------
+  /** %Print error info and halt.
+   *
+   * \param[in] pr Print destination.
+   */
+  void initErrorHalt(Print* pr) {
+    pr->println(F("begin() failed"));
+    if (sdErrorCode()) {
+      pr->println(F("Do not reformat the SD."));
+      if (sdErrorCode() == SD_CARD_ERROR_CMD0) {
+        pr->println(F("No card, wrong chip select pin, or wiring error?"));
+      }
+    }
+    errorHalt(pr);
+  }
+  //----------------------------------------------------------------------------
+  /** %Print error info and halt. */
+  void initErrorHalt() {initErrorHalt(&Serial);}
+  //----------------------------------------------------------------------------
+  /** %Print volume FAT/exFAT type.
    *
    * \param[in] pr Print destination.
    */
@@ -146,7 +207,7 @@ class SdBase : public Vol {
     }
   }
   //----------------------------------------------------------------------------
-  /** Print SD errorCode and errorData.
+  /** %Print SD errorCode and errorData.
    *
    * \param[in] pr Print destination.
    */
@@ -159,7 +220,7 @@ class SdBase : public Vol {
     }
   }
   //----------------------------------------------------------------------------
-  /** Print error info and return.
+  /** %Print error info and return.
    *
    * \param[in] pr Print destination.
    */
@@ -177,6 +238,14 @@ class SdBase : public Vol {
     } else if (!Vol::cwv()) {
       pr->println(F("Check SD format."));
     }
+  }
+  //----------------------------------------------------------------------------
+  /** Initialize file system after call to cardBegin.
+   *
+   * \return true for success else false.
+   */
+  bool volumeBegin() {
+     return Vol::begin(m_card);
   }
   //----------------------------------------------------------------------------
  private:

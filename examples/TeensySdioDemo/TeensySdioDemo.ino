@@ -50,7 +50,7 @@ void errorHalt(const char* msg) {
     Serial.print(", ErrorData: 0X");
     Serial.println(sd.sdErrorData(), HEX);
   }
-while(true);  
+  while (true) {} 
 }
 bool ready = false;
 //-----------------------------------------------------------------------------

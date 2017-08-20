@@ -239,6 +239,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac837a537fbcca14c7aa390c5fc9f4e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75d3276f0b02b03e863afafe5731fedb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a75d3276f0b02b03e863afafe5731fedb">remove</a> (const char *path)</td></tr>
 <tr class="separator:a75d3276f0b02b03e863afafe5731fedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cebcac13c1f4c9de7a055ae73133599"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a4cebcac13c1f4c9de7a055ae73133599">rename</a> (const char *newPath)</td></tr>
+<tr class="separator:a4cebcac13c1f4c9de7a055ae73133599"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b42f2454ff462555c07ea094a92a1e0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a4b42f2454ff462555c07ea094a92a1e0">rename</a> (<a class="el" href="class_fat_file.html">FatFile</a> *dirFile, const char *newPath)</td></tr>
 <tr class="separator:a4b42f2454ff462555c07ea094a92a1e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aac6e0b3cb08fc8b8668e916a8b0ca5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a5aac6e0b3cb08fc8b8668e916a8b0ca5">rewind</a> ()</td></tr>
@@ -2186,6 +2188,30 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>FatVolume</b></td></
 
 </div>
 </div>
+<a class="anchor" id="a4cebcac13c1f4c9de7a055ae73133599"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FatFile::rename </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>newPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Rename a file or subdirectory.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">newPath</td><td>New path name for the file/directory.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a4b42f2454ff462555c07ea094a92a1e0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2625,7 +2651,7 @@ Modify and access timestamps may be overwritten if a date time callback function
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 20 2017 07:54:33 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -389,6 +389,17 @@ class FsFile {
   }
   /** Rename a file or subdirectory.
    *
+   * \param[in] newPath New path name for the file/directory.
+   *
+   * \return The value true is returned for success and
+   * the value false is returned for failure.
+   */
+  bool rename(const char* newPath) {
+    return m_fFile ? m_fFile->rename(newPath) :
+           m_xFile ? m_xFile->rename(newPath) : false;
+  }
+  /** Rename a file or subdirectory.
+   *
    * \param[in] dirFile Directory for the new path.
    * \param[in] newPath New path name for the file/directory.
    *

@@ -676,6 +676,14 @@ class FatFile {
   void rewind() {
     seekSet(0);
   }
+   /** Rename a file or subdirectory.
+   *
+   * \param[in] newPath New path name for the file/directory.
+   *
+   * \return The value true is returned for success and
+   * the value false is returned for failure.
+   */
+  bool rename(const char* newPath);
   /** Rename a file or subdirectory.
    *
    * \param[in] dirFile Directory for the new path.
@@ -685,7 +693,6 @@ class FatFile {
    * the value false is returned for failure.
    */
   bool rename(FatFile* dirFile, const char* newPath);
-
   /** Remove a directory file.
    *
    * The directory file will be removed only if it is empty and is not the

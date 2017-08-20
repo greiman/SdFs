@@ -221,6 +221,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8e88c8e79551a72cc98310038514c47a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad10417a851dba3d40a78eb2c0eb11fff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#ad10417a851dba3d40a78eb2c0eb11fff">remove</a> (const ExChar_t *path)</td></tr>
 <tr class="separator:ad10417a851dba3d40a78eb2c0eb11fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab50b2646035f76834c75230d2b55c64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#aab50b2646035f76834c75230d2b55c64">rename</a> (const ExChar_t *newPath)</td></tr>
+<tr class="separator:aab50b2646035f76834c75230d2b55c64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea570a3b6afbe633d874803b137a46b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#aea570a3b6afbe633d874803b137a46b8">rename</a> (<a class="el" href="class_ex_fat_file.html">ExFatFile</a> *dirFile, const ExChar_t *newPath)</td></tr>
 <tr class="separator:aea570a3b6afbe633d874803b137a46b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c1d3ef65284ffb13ed3ceee472adf9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a3c1d3ef65284ffb13ed3ceee472adf9a">rewind</a> ()</td></tr>
@@ -1968,6 +1970,38 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aab50b2646035f76834c75230d2b55c64"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExFatFile::rename </td>
+          <td>(</td>
+          <td class="paramtype">const ExChar_t *&#160;</td>
+          <td class="paramname"><em>newPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Rename a file or subdirectory.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">newPath</td><td>New path name for the file/directory.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="aea570a3b6afbe633d874803b137a46b8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2454,7 +2488,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 17 2017 11:17:34 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 20 2017 07:54:33 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

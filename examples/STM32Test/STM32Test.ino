@@ -9,13 +9,11 @@
 // Chip select PA4, shared SPI, 18 MHz, port 1.
 #define SD1_CONFIG SdSpiConfig(PA4, SHARED_SPI, SD_SCK_MHZ(18), 1) 
 SdFs sd1;
-FsFile dir1;
 FsFile file1;
 
 // Chip select PB21, dedicated SPI, 18 MHz, port 2.
 #define SD2_CONFIG SdSpiConfig(PB12, DEDICATED_SPI, SD_SCK_MHZ(18), 2) 
 SdFs sd2;
-FsFile dir2;
 FsFile file2;
 
 const uint8_t BUF_DIM = 100;
@@ -29,14 +27,9 @@ const uint16_t NWRITE = FILE_SIZE/BUF_DIM;
 #define error(msg) {Serial.println(msg); errorHalt();}
 void errorHalt() {
   if (sd1.sdErrorCode()) {
-    Serial.print("sd1 errorCode: 0x");
-    Serial.println(sd1.sdErrorCode(), HEX);
+    sd1.errorHalt();
   }
-  if (sd2.sdErrorCode()) {
-    Serial.print("sd2 errorCode: 0x");
-    Serial.println(sd2.sdErrorCode(), HEX);    
-  }
-  while (true) {}
+  sd2.errorHalt();
 }
 //------------------------------------------------------------------------------
 void setup() {
@@ -68,8 +61,9 @@ void setup() {
       error("sd1.mkdir");
     }
   }
-  if (!dir1.open(&sd1, "Dir1", O_READ)) {
-     error("dir1.open");   
+  // Make Dir1 the working directory on sd1.
+  if (!sd1.chdir("Dir1")) {
+     error("dsd1.chdir");   
   }
   // initialize the second card
   if (!sd2.begin(SD2_CONFIG)) {
@@ -81,18 +75,19 @@ void setup() {
       error("sd2.mkdir");
     }
   }
-  if (!dir2.open(&sd2, "Dir2", O_READ)) {
-     error("dir2.open");   
+  // Make Dir2 the working directory on sd2.
+  if (!sd2.chdir("Dir2")) {
+     error("sd2.chdir");   
   }  
   // remove test.bin from /Dir1 directory of sd1
-  if (dir1.exists("test.bin")) {
-    if (!dir1.remove("test.bin")) {
+  if (sd1.exists("test.bin")) {
+    if (!sd1.remove("test.bin")) {
       error("remove test.bin");
     }
   }
   // remove rename.bin from /Dir2 directory of sd2
-  if (dir2.exists("rename.bin")) {
-    if (!dir2.remove("rename.bin")) {
+  if (sd2.exists("rename.bin")) {
+    if (!sd2.remove("rename.bin")) {
       error("remove rename.bin");
     }
   }
@@ -104,7 +99,7 @@ void setup() {
   Serial.println(F("---------------------"));
 
   // create or open /Dir1/test.bin and truncate it to zero length
-  if (!file1.open(&dir1, "test.bin", O_RDWR | O_CREAT | O_TRUNC)) {
+  if (!file1.open(&sd1, "test.bin", O_RDWR | O_CREAT | O_TRUNC)) {
     error("file1.open");
   }
   Serial.println(F("Writing test.bin to sd1"));
@@ -117,7 +112,7 @@ void setup() {
   }
 
   // create or open /Dir2/copy.bin and truncate it to zero length
-  if (!file2.open(&dir2, "copy.bin", O_WRITE | O_CREAT | O_TRUNC)) {
+  if (!file2.open(&sd2, "copy.bin", O_WRITE | O_CREAT | O_TRUNC)) {
     error("file2.open");
   }
   Serial.println(F("Copying test.bin to copy.bin"));
@@ -147,7 +142,7 @@ void setup() {
   // close test.bin
   file1.close();
   // sync copy.bin so ls works.
-  file2.sync(); 
+  file2.close(); 
   // list directories.
   Serial.println(F("------sd1 -------"));
   sd1.ls("/", LS_R | LS_SIZE);
@@ -156,7 +151,7 @@ void setup() {
   Serial.println(F("---------------------"));
   Serial.println(F("Renaming copy.bin"));
   // Rename copy.bin. The renamed file will be in Dir2.
-  if (!file2.rename(&dir2, "rename.bin")) {
+  if (!sd2.rename("copy.bin", "rename.bin")) {
     error("rename copy.bin");
   }
   file2.close();

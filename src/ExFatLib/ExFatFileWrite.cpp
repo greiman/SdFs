@@ -36,6 +36,10 @@ bool ExFatFile::preAllocate(uint64_t length) {
   (void)length;
   return false;
 }
+bool ExFatFile::rename(const ExChar_t* newPath) {
+  (void)newPath;
+  return false;
+}
 bool ExFatFile::rename(ExFatFile* dirFile, const ExChar_t* newPath) {
   (void)dirFile;
   (void)newPath;
@@ -293,6 +297,10 @@ bool ExFatFile::remove() {
 
  fail:
   return false;
+}
+//------------------------------------------------------------------------------
+bool ExFatFile::rename(const ExChar_t* newPath) {
+  return rename(m_vol->vwd(), newPath);
 }
 //------------------------------------------------------------------------------
 bool ExFatFile::rename(ExFatFile* dirFile, const ExChar_t* newPath) {

@@ -10,6 +10,12 @@
 #include "FreeStack.h"
 #include "ExFatLogger.h"
 
+// Interval between data records in microseconds.
+// Try 250 with Teensy 3.6, Due, or STM32.
+// Try 2000 with AVR boards.
+// Try 4000 with SAMD Zero boards.
+const uint32_t LOG_INTERVAL_USEC = 2000;
+
 // Set USE_RTC nonzero for file timestamps.
 // RAM use may be marginal on Uno with RTClib.
 #define USE_RTC 0
@@ -37,12 +43,6 @@ const uint8_t SD_CS_PIN = SS;
 const uint8_t SD_CS_PIN = SDCARD_SS_PIN;
 #endif  // SDCARD_SS_PIN
 
-// Interval between data records in microseconds.
-// Try 250 with Teensy 3.6, Due, or STM32.
-// Try 2000 with AVR boards.
-// Try 4000 with SAMD Zero boards.
-const uint32_t LOG_INTERVAL_USEC = 2000;
-
 // FIFO SIZE - 512 byte sectors.  Modify for your board.
 #ifdef __AVR_ATmega328P__
 // Use 512 bytes for 328 boards.
@@ -55,8 +55,8 @@ const uint32_t LOG_INTERVAL_USEC = 2000;
 #define FIFO_SIZE_SECTORS 16
 #endif  // __AVR_ATmega328P__
 
-// Preallocate 1GiB file.  Use uint64_t for 4GiB or larger.
-const uint32_t PREALLOCATE_SIZE = 1024UL*1024*1024;
+// Preallocate 1GiB file.
+const uint32_t PREALLOCATE_SIZE_MiB = 1024UL;
 
 // Select the fastest interface. Assumes no other SPI devices.
 #if ENABLE_DEDICATED_SPI
@@ -115,6 +115,7 @@ void printRecord(Print* pr, data_t* data) {
   }
 }
 //==============================================================================
+const uint64_t PREALLOCATE_SIZE  =  (uint64_t)PREALLOCATE_SIZE_MiB << 20;
 // Max length of file name including zero byte.
 #define FILE_NAME_DIM 40
 // Max number of records to buffer while SD is busy.
@@ -141,13 +142,8 @@ void dateTime(uint16_t* date, uint16_t* time) {
 }
 #endif
 //------------------------------------------------------------------------------
-void errorHalt() {
-  binFile.close();
-  sd.printSdError(&Serial);
-  SysCall::halt();
-}
-//------------------------------------------------------------------------------
-#define error(s) {Serial.print(F("Error: "));Serial.println(F(s));errorHalt();}
+#define error(s) sd.errorHalt(&Serial, F(s))
+#define dbgAssert(e) ((e) ? (void)0 : error(#e))
 //-----------------------------------------------------------------------------
 // Convert binary file to csv file.
 void binaryToCsv() {
@@ -177,7 +173,10 @@ void binaryToCsv() {
   if (!csvFile.open(csvName, O_WRITE | O_CREAT | O_TRUNC)) {
     error("open csvFile failed");
   }
-  binFile.rewind();
+  // Skip first dummy sector.
+  if (!binFile.seekSet(512)) {
+    error("seek failed");
+  }
   serialClearInput();
   Serial.print(F("Writing: "));
   Serial.print(csvName);
@@ -241,8 +240,8 @@ void createBinFile() {
   }
   Serial.println(binName);
   Serial.print(F("preAllocated: "));
-  Serial.print(PREALLOCATE_SIZE);
-  Serial.println(F(" bytes"));
+  Serial.print(PREALLOCATE_SIZE_MiB);
+  Serial.println(F(" MiB"));
 }
 //-------------------------------------------------------------------------------
 void logData() {
@@ -262,6 +261,13 @@ void logData() {
   Serial.println();
   Serial.print(F("FreeStack: "));
   Serial.println(FreeStack());
+  
+  // Write dummy sector to start multi-block write.
+  dbgAssert(sizeof(fifoData) >= 512);
+  memset(fifoData, 0, 512);
+  if (binFile.write(fifoData, 512) != 512) {
+    error("write first sector failed");
+  }
   serialClearInput();
   Serial.println(F("Type any character to stop"));
 
@@ -273,7 +279,7 @@ void logData() {
 
   // Time to log next record.
   uint32_t logTime = micros();
-  while (1) {
+  while (true) {
     // Time for next data record.
     logTime += LOG_INTERVAL_USEC;
 
@@ -394,7 +400,10 @@ void printData() {
     Serial.println(F("No current binary file"));
     return;
   }
-  binFile.rewind();
+  // Skip first dummy sector.
+  if (!binFile.seekSet(512)) {
+    error("seek failed");
+  }
   serialClearInput();
   Serial.println(F("type any character to stop\n"));
   delay(1000);
@@ -484,7 +493,7 @@ void setup() {
 
   // Initialize SD.
   if (!sd.begin(SD_CONFIG)) {
-    error("begin failed");
+    sd.initErrorHalt(&Serial);
   }
 #if USE_RTC
   if (!rtc.begin()) {
@@ -509,7 +518,7 @@ void loop() {
     digitalWrite(ERROR_LED_PIN, LOW);
   }  
   Serial.println();
-  Serial.println(F("type:"));
+  Serial.println(F("type: "));
   Serial.println(F("b - open existing bin file"));
   Serial.println(F("c - convert file to csv"));
   Serial.println(F("l - list files"));
@@ -520,7 +529,8 @@ void loop() {
     SysCall::yield();
   }
   char c = tolower(Serial.read());
-
+  Serial.println();
+  
   if (c == 'b') {
     openBinFile();
   } else if (c == 'c') {

@@ -49,13 +49,8 @@ FsFile root;
 // Create a Serial output stream.
 ArduinoOutStream cout(Serial);
 //------------------------------------------------------------------------------
-void errorHalt() {
-  sd.printSdError(&Serial);
-  SysCall::halt();
-}
-//------------------------------------------------------------------------------
 // Store error strings in flash to save RAM.
-#define error(s) {cout<<F(s)<<endl;errorHalt();}
+#define error(s) sd.errorHalt(&Serial, F(s))
 //------------------------------------------------------------------------------
 void setup() {
   Serial.begin(9600);
@@ -73,7 +68,7 @@ void setup() {
   
   // Initialize the SD card.
   if (!sd.begin(SD_CONFIG)) {
-    error("begin failed");
+    sd.initErrorHalt(&Serial);
   }
   if (sd.exists("Folder1") 
     || sd.exists("Folder1/file1.txt")

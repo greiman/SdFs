@@ -478,6 +478,14 @@ class ExFatFile {
   bool remove(const ExChar_t* path);
    /** Rename a file or subdirectory.
    *
+   * \param[in] newPath New path name for the file/directory.
+   *
+   * \return The value true is returned for success and
+   * the value false is returned for failure.
+   */
+  bool rename(const ExChar_t* newPath);
+   /** Rename a file or subdirectory.
+   *
    * \param[in] dirFile Directory for the new path.
    * \param[in] newPath New path name for the file/directory.
    *
@@ -485,7 +493,6 @@ class ExFatFile {
    * the value false is returned for failure.
    */
   bool rename(ExFatFile* dirFile, const ExChar_t* newPath);
-
   /** Set the file's current position to zero. */
   void rewind() {
     seekSet(0);
@@ -592,6 +599,7 @@ class ExFatFile {
   bool open(ExFatFile* dir, const char* path, int oflag);
   bool open(const char* path, int oflag = O_READ);
   bool remove(const char* path);
+  bool rename(const char* newPath);
   bool rename(ExFatFile* dirFile, const char* newPath);
 #endif  // USE_UNICODE_NAMES
 

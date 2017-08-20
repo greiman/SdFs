@@ -42,16 +42,10 @@ FsFile file;
 #endif  // SD_FAT_TYPE
 
 char line[40];
-//------------------------------------------------------------------------------
-void errorHalt() {
-  sd.printSdError(&Serial);
-  // printSdErrorCode requires less flash than printSdError.
-  // sd.printSdErrorCode(&Serial); 
-  SysCall::halt();
-}
+
 //------------------------------------------------------------------------------
 // Store error strings in flash to save RAM.
-#define error(s) {Serial.println(F(s));errorHalt();}
+#define error(s) sd.errorHalt(&Serial, F(s))
 //------------------------------------------------------------------------------
 // Check for extra characters in field or find minus sign.
 char* skipSpace(char* str) {
@@ -114,7 +108,7 @@ void setup() {
   }
   // Initialize the SD.
   if (!sd.begin(SD_CONFIG)) {
-    error("begin failed");
+    sd.initErrorHalt(&Serial);
     return;
   }
   // Remove any existing file.

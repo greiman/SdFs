@@ -76,13 +76,8 @@ FsFile file;
 // Serial output stream
 ArduinoOutStream cout(Serial);
 //------------------------------------------------------------------------------
-void errorHalt() {
-  sd.printSdError(&Serial);
-  SysCall::halt();
-}
-//------------------------------------------------------------------------------
 // Store error strings in flash to save RAM.
-#define error(s) {cout<<F(s)<<endl;errorHalt();}
+#define error(s) sd.errorHalt(&Serial, F(s))
 //------------------------------------------------------------------------------
 void cidDmp() {
   cid_t cid;
@@ -147,7 +142,7 @@ void loop() {
   cout << F("FreeStack: ") << FreeStack() << endl;
 
   if (!sd.begin(SD_CONFIG)) {
-    error("sd.begin failed");
+    sd.initErrorHalt(&Serial);
   }
   if (sd.fatType() == EXFAT_TYPE) {
     cout << F("Type is exFAT") << endl;

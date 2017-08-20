@@ -10,6 +10,7 @@ var searchData=
   ['implement_5fspi_5fport_5fselection',['IMPLEMENT_SPI_PORT_SELECTION',['../_fs_config_8h.html#aa13678c06fd801cb8f00b497a517d91e',1,'FsConfig.h']]],
   ['in',['in',['../classios__base.html#ae5432e3c269064480652c4602f5f74ad',1,'ios_base']]],
   ['init',['init',['../class_fs_cache.html#a2e56c9443880e3db0b68cc50217e8abe',1,'FsCache::init()'],['../class_ex_fat_partition.html#adb1d277492dccba09031e2064f4fa66f',1,'ExFatPartition::init()'],['../class_fat_cache.html#a30790e03daad69b62ec6d7d643975454',1,'FatCache::init()'],['../class_fat_partition.html#a11e099fac5b3b84c958954cde24d34e6',1,'FatPartition::init()'],['../classibufstream.html#a1d7bae17d9d2c79218085251946f322a',1,'ibufstream::init()'],['../classobufstream.html#a8f75dbadab2fed7770d01a2cc2628258',1,'obufstream::init()']]],
+  ['initerrorhalt',['initErrorHalt',['../class_sd_base.html#ad6edc950d13f1f1f2279ae80cf5d1065',1,'SdBase::initErrorHalt(Print *pr)'],['../class_sd_base.html#a5901169e4d6ae992b348df518da68a76',1,'SdBase::initErrorHalt()']]],
   ['internal',['internal',['../classios__base.html#afc720b7f6f461ec8e9cf5505059e5d7c',1,'ios_base::internal()'],['../ios_8h.html#a8dd76c1ce8fced364a98428ca1eea7a6',1,'internal():&#160;ios.h']]],
   ['invalidate',['invalidate',['../class_fs_cache.html#a963ea866ca2a9c4f63afd57cf287733d',1,'FsCache::invalidate()'],['../class_fat_cache.html#a70071a128d647b49b523dbb2f5f944a5',1,'FatCache::invalidate()']]],
   ['ios',['ios',['../classios.html',1,'ios'],['../classios.html#adc5dbd7b69da79493ebc84aa1e681aaa',1,'ios::ios()']]],

@@ -47,15 +47,8 @@ FsFile file;
 #error invalid SD_FAT_TYPE
 #endif  // SD_FAT_TYPE
 //------------------------------------------------------------------------------
-void errorHalt() {
-  sd.printSdError(&Serial);
-  // printSdErrorCode requires less flash than printSdError.
-  // sd.printSdErrorCode(&Serial); 
-  SysCall::halt();
-}
-//------------------------------------------------------------------------------
 // Store error strings in flash to save RAM.
-#define error(s) {Serial.println(F(s));errorHalt();}
+#define error(s) sd.errorHalt(&Serial, F(s))
 //------------------------------------------------------------------------------
 void setup() {
   Serial.begin(9600);
@@ -72,7 +65,7 @@ void setup() {
 
   // Initialize the SD.
   if (!sd.begin(SD_CONFIG)) {
-    error("sd.begin failed.");
+    sd.initErrorHalt(&Serial);
   }
   // Open root directory 
   if (!dir.open("/")){

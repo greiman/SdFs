@@ -786,6 +786,7 @@ bool SdioCard::writeSector(uint32_t sector, const uint8_t* src) {
       return false;
     }
     m_curSector++;
+
     if (m_curSector >= m_limitSector) {
       m_curState = IDLE_STATE;
     }

@@ -112,7 +112,7 @@ class FsCache {
  */
 class ExFatPartition {
  public:
-  ExFatPartition() {}
+  ExFatPartition() : m_fatType(0) {}
   /** \return the number of bytes in a cluster. */
   uint32_t bytesPerCluster() {return m_bytesPerCluster;}
   /** \return the power of two for bytesPerCluster. */
@@ -139,7 +139,7 @@ class ExFatPartition {
   /** \return the FAT start sector number. */
   uint32_t fatStartSector() {return m_fatStartSector;}
   /** \return Type for exFAT partition */
-  uint8_t fatType() const {return EXFAT_TYPE;}
+  uint8_t fatType() const {return m_fatType;}
   /** \return the free cluster count. */
   uint32_t freeClusterCount();
   /** Initialize a exFAT partition.
@@ -253,6 +253,7 @@ class ExFatPartition {
   uint32_t m_clusterMask;
   uint32_t m_bytesPerCluster;
   BlockDevice* m_blockDev;
+  uint8_t  m_fatType;
   uint8_t  m_sectorsPerClusterShift;
 };
 #endif  // ExFatPartition_h

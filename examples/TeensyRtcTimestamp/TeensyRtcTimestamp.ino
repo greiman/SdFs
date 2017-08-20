@@ -103,8 +103,7 @@ void setup() {
   FsDateTime::callback = dateTime;
   
   if (!sd.begin(SD_CONFIG)) {
-    Serial.println(F("sd.begin failed"));
-    return;
+    sd.initErrorHalt(&Serial);
   }
   // Remove old version to set create time.
   if (sd.exists("RtcTest.txt")) {

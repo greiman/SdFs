@@ -30,8 +30,7 @@ void setup() {
     yield();
   }
   if (!sd.begin(SD_CONFIG)) {
-    Serial.println("begin failed");
-    return;
+    sd.initErrorHalt(&Serial);
   }
   if (!file.open(u"Euros \u20AC test.txt", FILE_WRITE)) {
     Serial.println("file.open failed");
