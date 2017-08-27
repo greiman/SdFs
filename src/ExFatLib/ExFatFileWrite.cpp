@@ -521,6 +521,7 @@ bool ExFatFile::truncate() {
   }
   m_dataLength = m_curPosition;
   m_validLength = m_curPosition;
+  m_flags |= FILE_FLAG_DIR_DIRTY;
   return sync();
 
  fail:
