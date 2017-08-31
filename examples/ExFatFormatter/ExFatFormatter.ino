@@ -1,4 +1,4 @@
-// Force exFAT formatting for of all SD cards larger than 512MB.
+// Force exFAT formatting for all SD cards larger than 512MB.
 #include "SdFs.h"
 
 /*

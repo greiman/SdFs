@@ -231,7 +231,9 @@ class FatFile {
    */
   bool contiguousRange(uint32_t* bgnSector, uint32_t* endSector);
 
-  /** Allocate clusters to an empty file.
+  /** Allocate contiguous clusters to an empty file.
+   *
+   * The file must be empty with no clusters allocated.
    *
    * The file will contain uninitialized data.
    *

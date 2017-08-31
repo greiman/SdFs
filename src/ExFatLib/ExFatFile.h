@@ -343,8 +343,13 @@ class ExFatFile {
    * \return The byte if no error and not at eof else -1;
    */
   int peek();
-  /** Allocate clusters to an empty file.
+  /** Allocate contiguous clusters to an empty file.
    *
+   * The file must be empty with no clusters allocated.
+   *
+   * The file will have zero validLength and dataLength
+   * will equal the requested length.
+   * 
    * \param[in] length size of allocated space in bytes.
    * \return true for success else false.
    */
@@ -542,8 +547,6 @@ class ExFatFile {
    */
   bool sync();
   /** Truncate a file at the current file position.
-   * will be maintained if it is less than or equal to \a length otherwise
-   * it will be set to end of file.
    *
    * \return The value true is returned for success and
    * the value false is returned for failure.

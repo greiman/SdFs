@@ -151,6 +151,16 @@ static void printHex(Print* pr, uint32_t val) {
   }
 }
 //------------------------------------------------------------------------------
+void ExFatPartition::dmpCluster(Print* pr, uint32_t cluster,
+                                uint32_t offset, uint32_t count) {
+  uint32_t sector = clusterStartSector(cluster) + offset;
+  for (uint32_t i = 0; i < count; i++) {
+    pr->print(F("\nSector: "));
+    Serial.println(sector + i, HEX);
+    dmpSector(pr, sector + i);
+  }
+}
+//------------------------------------------------------------------------------
 void ExFatPartition::dmpSector(Print* pr, uint32_t sector) {
   uint8_t* cache = dataCacheGet(sector, FsCache::CACHE_FOR_READ);
   if (!cache) {

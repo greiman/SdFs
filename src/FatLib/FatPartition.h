@@ -28,6 +28,16 @@
 #include "SysCall.h"
 #include "BlockDevice.h"
 #include "../common/FsStructs.h"
+
+/** Type for FAT12 partition */
+const uint8_t FAT_TYPE_FAT12 = 12;
+
+/** Type for FAT12 partition */
+const uint8_t FAT_TYPE_FAT16 = 16;
+
+/** Type for FAT12 partition */
+const uint8_t FAT_TYPE_FAT32 = 32;
+
 //------------------------------------------------------------------------------
 // Forward declaration of FatPartition.
 class FatPartition;

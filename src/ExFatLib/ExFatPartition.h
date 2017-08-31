@@ -28,7 +28,7 @@
 #include "ExFatConfig.h"
 #include "ExFatTypes.h"
 /** Type for exFAT partition */
-const uint8_t EXFAT_TYPE = 64;
+const uint8_t FAT_TYPE_EXFAT = 64;
 
 class ExFatFile;
 //==============================================================================
@@ -138,7 +138,7 @@ class ExFatPartition {
   uint32_t fatLength() {return m_fatLength;}
   /** \return the FAT start sector number. */
   uint32_t fatStartSector() {return m_fatStartSector;}
-  /** \return Type for exFAT partition */
+  /** \return Type FAT_TYPE_EXFAT for exFAT partition or zero for error. */
   uint8_t fatType() const {return m_fatType;}
   /** \return the free cluster count. */
   uint32_t freeClusterCount();
@@ -167,6 +167,7 @@ class ExFatPartition {
   void checkUpcase(Print* pr);
   bool printDir(Print* pr, ExFatFile* file);
   void dmpBitmap(Print* pr);
+  void dmpCluster(Print* pr, uint32_t cluster, uint32_t offset, uint32_t count);
   void dmpFat(Print* pr, uint32_t start, uint32_t count);
   void dmpSector(Print* pr, uint32_t sector);
   bool printVolInfo(Print* pr);

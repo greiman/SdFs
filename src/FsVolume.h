@@ -106,7 +106,9 @@ class FsVolume {
     return m_fVol ? m_fVol->exists(path) :
            m_xVol ? m_xVol->exists(path) : false;
   }
-  /** \return Partition type. */
+  /** \return Partition type, FAT_TYPE_EXFAT, FAT_TYPE_FAT32,
+   *          FAT_TYPE_FAT16, or zero for error.
+   */
   uint8_t fatType() const {
     return m_fVol ? m_fVol->fatType() :
            m_xVol ? m_xVol->fatType() : 0;

@@ -161,6 +161,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad2ff91b86bc73c280b8ff96a80551bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9530e4383120004bce72590f0ce8af32"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_file.html#a9530e4383120004bce72590f0ce8af32">position</a> ()</td></tr>
 <tr class="separator:a9530e4383120004bce72590f0ce8af32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7319a7b532b60ecc0fd11de380db3a1e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_file.html#a7319a7b532b60ecc0fd11de380db3a1e">preAllocate</a> (uint64_t length)</td></tr>
+<tr class="separator:a7319a7b532b60ecc0fd11de380db3a1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa43303010dca2d82e3e9423cf692a38f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_file.html#aa43303010dca2d82e3e9423cf692a38f">printFileSize</a> (print_t *pr)</td></tr>
 <tr class="separator:aa43303010dca2d82e3e9423cf692a38f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae775cd32a8a3e5ed4084f5a13150c1c8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fs_file.html#ae775cd32a8a3e5ed4084f5a13150c1c8">printModifyDateTime</a> (print_t *pr)</td></tr>
@@ -1042,6 +1044,40 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7319a7b532b60ecc0fd11de380db3a1e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FsFile::preAllocate </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>length</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Allocate contiguous clusters to an empty file.</p>
+<p>The file must be empty with no clusters allocated.</p>
+<p>The file will contain uninitialized data for FAT16/FAT32 files. exFAT files will have zero validLength and dataLength will equal the requested length.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>size of the file in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true for success else false. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="aa43303010dca2d82e3e9423cf692a38f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1716,7 +1752,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 20 2017 07:54:33 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 31 2017 05:07:35 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

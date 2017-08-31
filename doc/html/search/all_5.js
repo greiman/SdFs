@@ -15,7 +15,6 @@ var searchData=
   ['errorhalt',['errorHalt',['../class_sd_base.html#a96eaf9ff221ef17a59704f209c11eadb',1,'SdBase::errorHalt(Print *pr)'],['../class_sd_base.html#a841a42d2ddc34c21dfb208b9a377c777',1,'SdBase::errorHalt()'],['../class_sd_base.html#a50489a06e3d0b2106a6dcefd42febdf4',1,'SdBase::errorHalt(Print *pr, const char *msg)'],['../class_sd_base.html#ae84a2b479b36342c7a6f5e0abf2739b8',1,'SdBase::errorHalt(Print *pr, const __FlashStringHelper *msg)'],['../class_sd_base.html#a3a0d626662aa29c5b942442d0f6ee0ff',1,'SdBase::errorHalt(const __FlashStringHelper *msg)'],['../class_sd_base.html#a65aab6f19ed26777c2b3a149bbed39b5',1,'SdBase::errorHalt(const char *msg)']]],
   ['errorline',['errorLine',['../class_sdio_card.html#af8755b1104e76b5553d5009be39f9df6',1,'SdioCard']]],
   ['estream',['estream',['../classestream.html',1,'estream'],['../classestream.html#a73b1cc5b9a257da9dd58484a10da218b',1,'estream::estream()']]],
-  ['exfat_5ftype',['EXFAT_TYPE',['../_ex_fat_partition_8h.html#a7f05ad59469a199a60eec09747fa2751',1,'ExFatPartition.h']]],
   ['exfatfile',['ExFatFile',['../class_ex_fat_file.html',1,'']]],
   ['exfatfile_2eh',['ExFatFile.h',['../_ex_fat_file_8h.html',1,'']]],
   ['exfatformatter',['ExFatFormatter',['../class_ex_fat_formatter.html',1,'']]],

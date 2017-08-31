@@ -1492,7 +1492,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Allocate clusters to an empty file.</p>
+<p>Allocate contiguous clusters to an empty file.</p>
+<p>The file must be empty with no clusters allocated.</p>
+<p>The file will have zero validLength and dataLength will equal the requested length.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>size of allocated space in bytes. </td></tr>
@@ -2315,7 +2317,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Truncate a file at the current file position. will be maintained if it is less than or equal to <em>length</em> otherwise it will be set to end of file.</p>
+<p>Truncate a file at the current file position.</p>
 <dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
 
 </div>
@@ -2488,7 +2490,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 20 2017 07:54:33 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 31 2017 05:07:35 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

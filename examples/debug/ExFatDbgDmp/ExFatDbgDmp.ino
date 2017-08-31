@@ -1,8 +1,10 @@
 #include "SdFs.h"
 #define DUMP_RAW 0
 #define DUMP_UPCASE 0
-
 const uint8_t CS_PIN = SS;
+//#define SD_CONFIG SdioConfig(FIFO_SDIO)
+#define SD_CONFIG SdSpiConfig(CS_PIN)
+
 SdExFat sd;
 #define error(s) sd.errorHalt(&Serial, F(s))
 void setup() {
@@ -10,7 +12,7 @@ void setup() {
   while (!Serial) {yield();}
   Serial.println(F("Type any character to begin"));
   while (!Serial.available()) {yield();}
-  if (!sd.begin(CS_PIN)){
+  if (!sd.begin(SD_CONFIG)){
     error("begin failed");
   }
 #if DUMP_RAW
@@ -34,7 +36,8 @@ void setup() {
   sd.checkUpcase(&Serial);
 #if DUMP_UPCASE
   sd.printUpcase(&Serial);
-#endif  // DUMP_UPCASE   
+#endif  // DUMP_UPCASE
+ // sd.dmpCluster(&Serial, 8, 0, 4);   
   Serial.println("Done");
 }
 

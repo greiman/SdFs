@@ -199,7 +199,7 @@ class SdBase : public Vol {
    * \param[in] pr Print destination.
    */
   void printFatType(Print* pr) {
-    if (Vol::fatType() == EXFAT_TYPE) {
+    if (Vol::fatType() == FAT_TYPE_EXFAT) {
       pr->print(F("exFAT"));
     } else {
       pr->print(F("FAT"));

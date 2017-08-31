@@ -144,7 +144,7 @@ void loop() {
   if (!sd.begin(SD_CONFIG)) {
     sd.initErrorHalt(&Serial);
   }
-  if (sd.fatType() == EXFAT_TYPE) {
+  if (sd.fatType() == FAT_TYPE_EXFAT) {
     cout << F("Type is exFAT") << endl;
   } else {
     cout << F("Type is FAT") << int(sd.fatType()) << endl;

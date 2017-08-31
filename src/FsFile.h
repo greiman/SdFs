@@ -328,6 +328,23 @@ class FsFile {
     return m_fFile ? m_fFile->printFileSize(pr) :
            m_xFile ? m_xFile->printFileSize(pr) : 0;
   }
+  /** Allocate contiguous clusters to an empty file.
+   *
+   * The file must be empty with no clusters allocated.
+   *
+   * The file will contain uninitialized data for FAT16/FAT32 files.
+   * exFAT files will have zero validLength and dataLength will equal
+   * the requested length.
+   *
+   * \param[in] length size of the file in bytes.
+   * \return true for success else false.
+   */  
+  bool preAllocate(uint64_t length) {
+    if (m_fFile) {
+      return length < (1ULL << 32) ? m_fFile->preAllocate(length) : false;
+    }
+    return m_xFile ? m_xFile->preAllocate(length) : false;
+  }
   /** \return the current file position. */
   uint64_t position() {return curPosition();}
   /** Read the next byte from a file.

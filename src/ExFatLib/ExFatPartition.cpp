@@ -118,7 +118,7 @@ bool ExFatPartition::init(BlockDevice* dev, uint8_t part) {
   // Set m_bitmapStart to first free cluster.
   m_bitmapStart = 0;
   bitmapFind(0, 1);
-  m_fatType = EXFAT_TYPE;
+  m_fatType = FAT_TYPE_EXFAT;
   return true;
 
  fail:
