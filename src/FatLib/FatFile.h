@@ -918,6 +918,9 @@ class FatFile {
   static const uint8_t FILE_FLAG_READ = O_READ;
   static const uint8_t FILE_FLAG_WRITE = O_WRITE;
   static const uint8_t FILE_FLAG_OFLAG = O_ACCMODE | O_APPEND;
+  // treat curPosition as valid length.
+  static const uint8_t FILE_FLAG_PREALLOCATE = 0X20;
+  // file is contiguous
   static const uint8_t FILE_FLAG_CONTIGUOUS  = 0X40;
   // sync of directory entry required
   static const uint8_t FILE_FLAG_DIR_DIRTY = 0X80;

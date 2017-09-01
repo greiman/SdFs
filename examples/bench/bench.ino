@@ -35,11 +35,12 @@ const uint8_t SD_CS_PIN = SDCARD_SS_PIN;
 #define SD_CONFIG SdSpiConfig(SD_CS_PIN, SHARED_SPI)
 #endif  // HAS_SDIO_CLASS
 
-// If BLOCK_INTERVAL_MICROS is nonzero, a data source that
-// produces BUF_SIZE bytes every BUF_INTERVAL_MICROS will
-// be simulated. An estimate of the count of buffers required
-// in a data logger due to write latency problems will be printed.
-const uint32_t BUF_INTERVAL_MICROS = 0;
+// Set PRE_ALLOCATE true to pre-allocate file clusters.
+const bool PRE_ALLOCATE = true;
+
+// Set SKIP_FIRST_LATENCY true if the first read/write to the SD can
+// be avoid by writing a file header or reading the first record. 
+const bool SKIP_FIRST_LATENCY = true; 
 
 // Size of read/write.
 const size_t BUF_SIZE = 512;
@@ -58,7 +59,9 @@ const uint8_t READ_COUNT = 2;
 // File size in bytes.
 const uint32_t FILE_SIZE = 1000000UL*FILE_SIZE_MB;
 
-uint8_t buf[BUF_SIZE];
+// Insure 4-byte alignment.
+uint32_t buf32[(BUF_SIZE + 3)/4];
+uint8_t* buf = (uint8_t*)buf32;
 
 #if SD_FAT_TYPE == 1
 SdFat sd;
@@ -123,10 +126,10 @@ void setup() {
 void loop() {
   float s;
   uint32_t t;
-  int32_t maxBufMicros = 0;
   uint32_t maxLatency;
   uint32_t minLatency;
   uint32_t totalLatency;
+  bool skipLatency;
 
   // Discard any input.
   do {
@@ -169,64 +172,49 @@ void loop() {
 
   cout << F("FILE_SIZE_MB = ") << FILE_SIZE_MB << endl;
   cout << F("BUF_SIZE = ") << BUF_SIZE << F(" bytes\n");
-  if (BUF_INTERVAL_MICROS) {
-    cout << F("BUF_INTERVAL_MICROS = ") << BUF_INTERVAL_MICROS << endl;
-  }
   cout << F("Starting write test, please wait.") << endl << endl;
 
   // do write test
-  uint32_t n = FILE_SIZE/sizeof(buf);
+  uint32_t n = FILE_SIZE/BUF_SIZE;
   cout <<F("write speed and latency") << endl;
   cout << F("speed,max,min,avg") << endl;
   cout << F("KB/Sec,usec,usec,usec") << endl;
   for (uint8_t nTest = 0; nTest < WRITE_COUNT; nTest++) {
     file.truncate(0);
-#if SD_FAT_TYPE == 2
-  if (!file.preAllocate(FILE_SIZE)) {
-    error("preAllocate failed");
-  }
-#endif  // SD_FAT_TYPE == 2
+    if (PRE_ALLOCATE) {
+      if (!file.preAllocate(FILE_SIZE)) {
+        error("preAllocate failed");
+      }
+    }
     maxLatency = 0;
     minLatency = 9999999;
     totalLatency = 0;
+    skipLatency = SKIP_FIRST_LATENCY;
     t = millis();
-    uint32_t bm = micros();
     for (uint32_t i = 0; i < n; i++) {
-      if (BUF_INTERVAL_MICROS) {
-        bm += BUF_INTERVAL_MICROS;
-        int32_t delta = micros() - bm;
-        if (delta > maxBufMicros) {
-          maxBufMicros = delta;
-        }
-        while (delta < 0) {
-          delta = micros() - bm;
-        }
-      }
       uint32_t m = micros();
-      if (file.write(buf, sizeof(buf)) != sizeof(buf)) {
+      if (file.write(buf, BUF_SIZE) != BUF_SIZE) {
         error("write failed");
       }
       m = micros() - m;
-      if (maxLatency < m) {
-        maxLatency = m;
-      }
-      if (minLatency > m) {
-        minLatency = m;
-      }
       totalLatency += m;
+      if (skipLatency) {
+        // Wait until first write to SD, not just a copy to the cache.
+        skipLatency = file.curPosition() < 512;
+      } else {
+        if (maxLatency < m) {
+          maxLatency = m;
+        }
+        if (minLatency > m) {
+          minLatency = m;
+        }
+      }
     }
     file.sync();
     t = millis() - t;
     s = file.fileSize();
     cout << s/t <<',' << maxLatency << ',' << minLatency;
     cout << ',' << totalLatency/n << endl;
-  }
-  if (BUF_INTERVAL_MICROS) {
-    // Stop spurious gcc division by zero warning.
-    size_t neededBufCount = BUF_INTERVAL_MICROS == 0 ? 0 :
-                            2 + (maxBufMicros)/BUF_INTERVAL_MICROS;
-    cout << F("maxBufMicros: ") << maxBufMicros << endl;
-    cout << F("neededBufCount: ") << neededBufCount << endl;
   }
   cout << endl << F("Starting read test, please wait.") << endl;
   cout << endl <<F("read speed and latency") << endl;
@@ -239,24 +227,29 @@ void loop() {
     maxLatency = 0;
     minLatency = 9999999;
     totalLatency = 0;
+    skipLatency = SKIP_FIRST_LATENCY;    
     t = millis();
     for (uint32_t i = 0; i < n; i++) {
       buf[BUF_SIZE-1] = 0;
       uint32_t m = micros();
-      int32_t nr = file.read(buf, sizeof(buf));
-      if (nr != sizeof(buf)) {
+      int32_t nr = file.read(buf, BUF_SIZE);
+      if (nr != BUF_SIZE) {
         error("read failed");
       }
       m = micros() - m;
-      if (maxLatency < m) {
-        maxLatency = m;
-      }
-      if (minLatency > m) {
-        minLatency = m;
-      }
       totalLatency += m;
       if (buf[BUF_SIZE-1] != '\n') {
         error("data check error");
+      }
+      if (skipLatency) {
+        skipLatency = false;
+      } else {
+        if (maxLatency < m) {
+          maxLatency = m;
+        }
+        if (minLatency > m) {
+          minLatency = m;
+        }
       }
     }
     s = file.fileSize();

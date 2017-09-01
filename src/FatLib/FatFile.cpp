@@ -163,7 +163,7 @@ bool FatFile::preAllocate(uint32_t length) {
 
 #if USE_FAT_FILE_FLAG_CONTIGUOUS
   // Mark contiguous and insure sync() will update dir entry
-  m_flags |= FILE_FLAG_CONTIGUOUS | FILE_FLAG_DIR_DIRTY;
+  m_flags |= FILE_FLAG_PREALLOCATE | FILE_FLAG_CONTIGUOUS | FILE_FLAG_DIR_DIRTY;
 #else  // USE_FAT_FILE_FLAG_CONTIGUOUS
   // insure sync() will update dir entry
   m_flags |= FILE_FLAG_DIR_DIRTY;
@@ -615,7 +615,7 @@ fail:
 }
 //------------------------------------------------------------------------------
 int FatFile::peek() {
-  uint64_t curPosition = m_curPosition;
+  uint32_t curPosition = m_curPosition;
   uint32_t curCluster = m_curCluster;
   int c = read();
   m_curPosition = curPosition;
@@ -1084,6 +1084,7 @@ bool FatFile::seekSet(uint32_t pos) {
 
 done:
   m_curPosition = pos;
+  m_flags &= ~FILE_FLAG_PREALLOCATE;
   return true;
 
 fail:
@@ -1314,7 +1315,8 @@ size_t FatFile::write(const void* buf, size_t nbyte) {
         n = nToWrite;
       }
 
-      if (sectorOffset == 0 && m_curPosition >= m_fileSize) {
+      if (sectorOffset == 0 &&
+         (m_curPosition >= m_fileSize || m_flags & FILE_FLAG_PREALLOCATE)) {
         // start of new sector don't need to read into cache
         cacheOption = FatCache::CACHE_RESERVE_FOR_WRITE;
       } else {

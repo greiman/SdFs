@@ -58,7 +58,7 @@ void setup() {
     error("write failed for first sector");
   }
   
-  while (file.size() < FILE_SIZE) {
+  while (file.position() < FILE_SIZE) {
     if (waitBusy) {
       while (sd.card()->isBusy()) {}
     }
