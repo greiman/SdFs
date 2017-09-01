@@ -1,21 +1,26 @@
-/* ExFat Library
- * Copyright (C) 2016..2017 by William Greiman
+/**
+ * Copyright (c) 20011-2017 Bill Greiman
+ * This file is part of the SdFs library for SD memory cards.
  *
- * This file is part of the ExFat Library
+ * MIT License
  *
- * This Library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * This Library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public License
- * along with the ExFat Library.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  */
 #include "../common/DebugMacros.h"
 #include "ExFatFile.h"
@@ -216,8 +221,7 @@ bool ExFatFile::mkdir(ExFatFile* parent, ExName_t* fname) {
 
   // Set to start of dir
   rewind();
-  m_flags = O_READ | FILE_FLAG_CONTIGUOUS | FILE_FLAG_DIR_DIRTY;  /////  Use and/or or set value?/////////
-  return sync();
+  m_flags = FILE_FLAG_READ | FILE_FLAG_CONTIGUOUS | FILE_FLAG_DIR_DIRTY;
 
 fail:
   return false;
@@ -226,7 +230,7 @@ fail:
 bool ExFatFile::preAllocate(uint64_t length) {
   uint32_t find;
   uint32_t need;
-  if (!length || !isFile() || !(m_flags & O_WRITE) || m_firstCluster) {
+  if (!length || !isWritable() || m_firstCluster) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -256,7 +260,7 @@ bool ExFatFile::preAllocate(uint64_t length) {
 bool ExFatFile::remove() {
   DirPos_t pos = m_dirPos;
   uint8_t* cache;
-  if (!isFile() || !(m_flags & O_WRITE)) {
+  if (!isWritable()) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -291,6 +295,7 @@ bool ExFatFile::remove() {
   }
   // Set this file closed.
   m_attributes = FILE_ATTR_CLOSED;
+  m_flags = 0;
 
   // Write entry to device.
   return m_vol->cacheSync();
@@ -331,7 +336,7 @@ bool ExFatFile::rename(ExFatFile* dirFile, const ExChar_t* newPath) {
   }
   // Remove old directory entry;
   oldFile.m_firstCluster = 0;
-  oldFile.m_flags = O_WRITE;
+  oldFile.m_flags = FILE_FLAG_WRITE;
   oldFile.m_attributes = FILE_ATTR_FILE;
   return oldFile.remove();
 
@@ -365,7 +370,7 @@ bool ExFatFile::rmdir() {
   }
   // convert empty directory to normal file for remove
   m_attributes = FILE_ATTR_FILE;
-  m_flags |= O_WRITE;
+  m_flags |= FILE_FLAG_WRITE;
   return remove();
 
 fail:
@@ -472,7 +477,7 @@ bool ExFatFile::syncDir() {
 bool ExFatFile::truncate() {
   uint32_t toFree;
   // error if not a normal file or read-only
-  if (!isFile() || !(m_flags & O_WRITE)) {
+  if (!isWritable()) {
     DBG_FAIL_MACRO;
     goto fail;
   }
@@ -541,7 +546,7 @@ size_t ExFatFile::write(const void* buf, size_t nbyte) {
   size_t toWrite = nbyte;
   size_t n;
   // error if not an open file or is read-only
-  if (!isFile() || !(m_flags & O_WRITE)) {
+  if (!isWritable()) {
     DBG_FAIL_MACRO;
     goto fail;
   }

@@ -1,21 +1,26 @@
-/* ExFat Library
- * Copyright (C) 2016..2017 by William Greiman
+/**
+ * Copyright (c) 20011-2017 Bill Greiman
+ * This file is part of the SdFs library for SD memory cards.
  *
- * This file is part of the ExFat Library
+ * MIT License
  *
- * This Library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * This Library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public License
- * along with the ExFat Library.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  */
 #ifndef ExFatFile_h
 #define ExFatFile_h
@@ -85,7 +90,7 @@ struct ExFatPos_t {
  */
 class ExFatFile {
  public:
-  ExFatFile() : m_attributes(FILE_ATTR_CLOSED), m_error(0) {}
+  ExFatFile() : m_attributes(FILE_ATTR_CLOSED), m_error(0), m_flags(0) {}
 
   /** The parenthesis operator.
     *
@@ -212,6 +217,10 @@ class ExFatFile {
   bool isSubDir() const {return m_attributes & FILE_ATTR_SUBDIR;}
   /** \return True if this is the root directory. */
   bool isRoot() const {return m_attributes & FILE_ATTR_ROOT;}
+  /** \return True file is writable. */
+  bool isReadable() const {return m_flags & FILE_FLAG_READ;}
+  /** \return True file is writable. */
+  bool isWritable() const {return m_flags & FILE_FLAG_WRITE;}
   /** List directory contents.
    *
    * \param[in] pr Print stream for list.
@@ -275,10 +284,6 @@ class ExFatFile {
    * under O_EXCL below. Otherwise, the file shall be created
    *
    * O_EXCL - If O_CREAT and O_EXCL are set, open() shall fail if the file exists.
-   *
-   * O_SYNC - Call sync() after each write.  This flag should not be used with
-   * write(uint8_t) or any functions do character at a time writes since sync()
-   * will be called after each byte.
    *
    * O_TRUNC - If the file exists and is a regular file, and the file is
    * successfully opened and is not read only, its length shall be truncated to 0.
@@ -349,7 +354,7 @@ class ExFatFile {
    *
    * The file will have zero validLength and dataLength
    * will equal the requested length.
-   * 
+   *
    * \param[in] length size of allocated space in bytes.
    * \return true for success else false.
    */
@@ -648,22 +653,23 @@ class ExFatFile {
                        EXFAT_ATTRIB_HIDDEN | EXFAT_ATTRIB_SYSTEM |
                        EXFAT_ATTRIB_DIRECTORY | EXFAT_ATTRIB_ARCHIVE;
 
-  static const uint8_t FILE_FLAG_OFLAG = (O_ACCMODE | O_APPEND | O_SYNC);
+  static const uint8_t FILE_FLAG_READ = O_READ;
+  static const uint8_t FILE_FLAG_WRITE = O_WRITE;
+  static const uint8_t FILE_FLAG_OFLAG = O_ACCMODE | O_APPEND;
   static const uint8_t FILE_FLAG_CONTIGUOUS  = 0X40;
   static const uint8_t FILE_FLAG_DIR_DIRTY = 0X80;
 
-  uint64_t   m_curPosition;
-  uint64_t   m_dataLength;
-  uint64_t   m_validLength;
-  uint32_t   m_curCluster;
-  uint32_t   m_firstCluster;
-//  ExFatPartition*  m_vol;
+  uint64_t      m_curPosition;
+  uint64_t      m_dataLength;
+  uint64_t      m_validLength;
+  uint32_t      m_curCluster;
+  uint32_t      m_firstCluster;
   ExFatVolume*  m_vol;
-  DirPos_t   m_dirPos;
-  uint8_t    m_setCount;
-  uint8_t    m_attributes;
-  uint8_t    m_error;
-  uint8_t    m_flags;
+  DirPos_t      m_dirPos;
+  uint8_t       m_setCount;
+  uint8_t       m_attributes;
+  uint8_t       m_error;
+  uint8_t       m_flags;
 };
 #include "../common/ArduinoFiles.h"
 /**

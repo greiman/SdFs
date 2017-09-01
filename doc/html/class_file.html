@@ -166,6 +166,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aed36d17f8fde597b6ed9446faec1f7e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c8a07b081f04aa25839c6f56c739bdc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a4c8a07b081f04aa25839c6f56c739bdc">isOpen</a> () const </td></tr>
 <tr class="separator:a4c8a07b081f04aa25839c6f56c739bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace9b831c9d034506bb9cd38242b270b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#ace9b831c9d034506bb9cd38242b270b0">isReadable</a> () const </td></tr>
+<tr class="separator:ace9b831c9d034506bb9cd38242b270b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6872d3acb1e70f81c9c2be2495977583"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#a6872d3acb1e70f81c9c2be2495977583">isReadOnly</a> () const </td></tr>
 <tr class="separator:a6872d3acb1e70f81c9c2be2495977583"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4a206803a4bf8243be20244c1aef4d2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#aa4a206803a4bf8243be20244c1aef4d2">isRoot</a> () const </td></tr>
@@ -178,6 +180,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a95b503b17442c2b364a2f53de1b2aeba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add932e13e5bf32ad467af6ec34824e3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#add932e13e5bf32ad467af6ec34824e3c">isSystem</a> () const </td></tr>
 <tr class="separator:add932e13e5bf32ad467af6ec34824e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa428bb01af189345753ae150b182d98"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#afa428bb01af189345753ae150b182d98">isWritable</a> () const </td></tr>
+<tr class="separator:afa428bb01af189345753ae150b182d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad49f688a494b351ccbb0102dcfafb925"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#ad49f688a494b351ccbb0102dcfafb925">ls</a> (uint8_t flags=0)</td></tr>
 <tr class="separator:ad49f688a494b351ccbb0102dcfafb925"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acabf31ff85e696fbf384c49428012fea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fat_file.html#acabf31ff85e696fbf384c49428012fea">ls</a> (print_t *pr, uint8_t flags=0, uint8_t indent=0)</td></tr>
@@ -852,7 +856,12 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The value true, is returned for success and the value false, is returned for failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The value true, is returned for success and the value false, is returned for failure.</dd></dl>
+<p>Copyright (c) 20011-2017 Bill Greiman This file is part of the <a class="el" href="class_sd_fs.html" title="SD file system class for FAT16, FAT32, and exFAT volumes. ">SdFs</a> library for SD memory cards.</p>
+<p>MIT License</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
 
 </div>
 </div>
@@ -1024,6 +1033,30 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ace9b831c9d034506bb9cd38242b270b0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FatFile::isReadable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True file is writable. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a6872d3acb1e70f81c9c2be2495977583"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1165,6 +1198,30 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>True if this is a system file. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afa428bb01af189345753ae150b182d98"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FatFile::isWritable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True file is writable. </dd></dl>
 
 </div>
 </div>
@@ -1604,7 +1661,6 @@ Static Public Member Functions</h2></td></tr>
 <p>O_AT_END - Set the initial position at the end of the file.</p>
 <p>O_CREAT - If the file exists, this flag has no effect except as noted under O_EXCL below. Otherwise, the file shall be created</p>
 <p>O_EXCL - If O_CREAT and O_EXCL are set, <a class="el" href="class_fat_file.html#a273f6cba99331f7ca44616f7755fea37">open()</a> shall fail if the file exists.</p>
-<p>O_SYNC - Call <a class="el" href="class_fat_file.html#a67f3dc4896c542d695e11aac927f585e">sync()</a> after each write. This flag should not be used with <a class="el" href="class_fat_file.html#ae51e724ac6cc3d67d64a5a666d5850f1">write(uint8_t)</a> or any functions do character at a time writes since <a class="el" href="class_fat_file.html#a67f3dc4896c542d695e11aac927f585e">sync()</a> will be called after each byte.</p>
 <p>O_TRUNC - If the file exists and is a regular file, and the file is successfully opened and is not read only, its length shall be truncated to 0.</p>
 <p>WARNING: A given file must not be opened by more than one <a class="el" href="class_fat_file.html" title="Basic file class. ">FatFile</a> object or file corruption may occur.</p>
 <dl class="section note"><dt>Note</dt><dd>Directory files must be opened read only. Write and truncation is not allowed for directory files.</dd></dl>
@@ -3173,7 +3229,7 @@ Modify and access timestamps may be overwritten if a date time callback function
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 31 2017 05:07:35 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 1 2017 03:20:54 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

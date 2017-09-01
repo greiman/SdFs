@@ -1,21 +1,26 @@
-/* FatLib Library
- * Copyright (C) 2012..2017 by William Greiman
+/**
+ * Copyright (c) 20011-2017 Bill Greiman
+ * This file is part of the SdFs library for SD memory cards.
  *
- * This file is part of the FatLib Library
+ * MIT License
  *
- * This Library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * This Library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public License
- * along with the FatLib Library.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  */
 #ifndef FatFile_h
 #define FatFile_h
@@ -23,7 +28,6 @@
  * \file
  * \brief FatFile class
  */
-// #include <ctype.h>
 #include <string.h>
 #include <stddef.h>
 #include <limits.h>
@@ -106,7 +110,7 @@ const uint8_t FNAME_FLAG_LC_EXT = FAT_CASE_LC_EXT;
 class FatFile {
  public:
   /** Create an instance. */
-  FatFile() : m_attr(FILE_ATTR_CLOSED), m_error(0) {}
+  FatFile() : m_attributes(FILE_ATTR_CLOSED), m_error(0), m_flags(0) {}
 
 
 #if DESTRUCTOR_CLOSES_FILE
@@ -324,17 +328,21 @@ class FatFile {
    * the value false, is returned for failure.
    */
   bool getSFN(char* name);
+#if USE_FAT_FILE_FLAG_CONTIGUOUS
+    /** \return True if the file is contiguous. */
+  bool isContiguous() const {return m_flags & FILE_FLAG_CONTIGUOUS;}
+#endif  // USE_FAT_FILE_FLAG_CONTIGUOUS
   /** \return True if this is a directory. */
   bool isDir() const {
-    return m_attr & FILE_ATTR_DIR;
+    return m_attributes & FILE_ATTR_DIR;
   }
   /** \return True if this is a normal file. */
   bool isFile() const {
-    return m_attr & FILE_ATTR_FILE;
+    return m_attributes & FILE_ATTR_FILE;
   }
   /** \return True if this is a hidden file. */
   bool isHidden() const {
-    return m_attr & FILE_ATTR_HIDDEN;
+    return m_attributes & FILE_ATTR_HIDDEN;
   }
   /** \return true if this file has a Long File Name. */
   bool isLFN() const {
@@ -342,31 +350,39 @@ class FatFile {
   }
   /** \return True if this is an open file/directory. */
   bool isOpen() const {
-    return m_attr;
+    return m_attributes;
   }
   /** \return True if this is the root directory. */
   bool isRoot() const {
-    return m_attr & FILE_ATTR_ROOT;
+    return m_attributes & FILE_ATTR_ROOT;
   }
   /** \return True if this is the FAT32 root directory. */
   bool isRoot32() const {
-    return m_attr & FILE_ATTR_ROOT32;
+    return m_attributes & FILE_ATTR_ROOT32;
   }
   /** \return True if this is the FAT12 of FAT16 root directory. */
   bool isRootFixed() const {
-    return m_attr & FILE_ATTR_ROOT_FIXED;
+    return m_attributes & FILE_ATTR_ROOT_FIXED;
   }
   /** \return True if file is read-only */
   bool isReadOnly() const {
-    return m_attr & FILE_ATTR_READ_ONLY;
+    return m_attributes & FILE_ATTR_READ_ONLY;
   }
   /** \return True if this is a subdirectory. */
   bool isSubDir() const {
-    return m_attr & FILE_ATTR_SUBDIR;
+    return m_attributes & FILE_ATTR_SUBDIR;
   }
   /** \return True if this is a system file. */
   bool isSystem() const {
-    return m_attr & FILE_ATTR_SYSTEM;
+    return m_attributes & FILE_ATTR_SYSTEM;
+  }
+  /** \return True file is writable. */
+  bool isReadable() const {
+    return m_flags & FILE_FLAG_READ;
+  }
+  /** \return True file is writable. */
+  bool isWritable() const {
+    return m_flags & FILE_FLAG_WRITE;
   }
   /** Check for a legal 8.3 character.
    * \param[in] c Character to be checked.
@@ -476,10 +492,6 @@ class FatFile {
    * under O_EXCL below. Otherwise, the file shall be created
    *
    * O_EXCL - If O_CREAT and O_EXCL are set, open() shall fail if the file exists.
-   *
-   * O_SYNC - Call sync() after each write.  This flag should not be used with
-   * write(uint8_t) or any functions do character at a time writes since sync()
-   * will be called after each byte.
    *
    * O_TRUNC - If the file exists and is a regular file, and the file is
    * successfully opened and is not read only, its length shall be truncated to 0.
@@ -876,7 +888,7 @@ class FatFile {
 
   // private functions
 #if 0  ////////////////////////////////////////////////////////////////////////////////////////////////////
-  uint8_t fileAttr() const {return m_attr;}
+  uint8_t fileAttr() const {return m_attributes;}
   uint32_t curCluster() const {return m_curCluster;}
   uint16_t dirIndex() {return m_dirIndex;}
   uint32_t firstCluster() const {return m_firstCluster;}
@@ -902,15 +914,19 @@ class FatFile {
   dir_t* readDirCache(bool skipReadOk = false);
 
   // bits defined in m_flags
-  // should be 0X0F
-  static const uint8_t F_OFLAG = (O_ACCMODE | O_APPEND | O_SYNC);
+  // should be 0X07
+  static const uint8_t FILE_FLAG_READ = O_READ;
+  static const uint8_t FILE_FLAG_WRITE = O_WRITE;
+  static const uint8_t FILE_FLAG_OFLAG = O_ACCMODE | O_APPEND;
+  static const uint8_t FILE_FLAG_CONTIGUOUS  = 0X40;
   // sync of directory entry required
-  static const uint8_t F_FILE_DIR_DIRTY = 0X80;
+  static const uint8_t FILE_FLAG_DIR_DIRTY = 0X80;
 
   // private data
   static const uint8_t WRITE_ERROR = 0X1;
   static const uint8_t READ_ERROR  = 0X2;
-  uint8_t    m_attr;             // File attributes
+
+  uint8_t    m_attributes;       // File attributes
   uint8_t    m_error;            // Error bits.
   uint8_t    m_flags;            // See above for definition of m_flags bits
   uint8_t    m_lfnOrd;

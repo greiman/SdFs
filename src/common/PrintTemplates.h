@@ -1,21 +1,26 @@
-/* SdFs Library
- * Copyright (C) 2016..2017 by William Greiman
+/**
+ * Copyright (c) 20011-2017 Bill Greiman
+ * This file is part of the SdFs library for SD memory cards.
  *
- * This file is part of the SdFs Library
+ * MIT License
  *
- * This Library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * This Library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public License
- * along with the SdFs Library.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  */
 #ifndef PrintTemplates_h
 #define PrintTemplates_h
@@ -32,20 +37,20 @@
 //-----------------------------------------------------------------------------
 /** Formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] fmt format string.
  * \param[in] ap argument list.
  *
  * \return number of character printed for success else a negative value.
  */
-template<typename F> 
+template<typename F>
 int vfprintf(F* file, const char *fmt, va_list ap) {
 #if PRINTF_USE_FLOAT
   char buf[30];
   double f;
-#else 
-   char buf[15]; 
-#endif  // PRINTF_USE_FLOAT  
+#else
+   char buf[15];
+#endif  // PRINTF_USE_FLOAT
   char prefix[3];
   unsigned base;
   int n;
@@ -54,7 +59,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
   int nz;
   int prec;
   int width;
-  size_t np;    
+  size_t np;
   size_t ns;
   size_t nw;
   long ln;
@@ -77,7 +82,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
         goto fail;
       }
     }
-    if (!c) break; 
+    if (!c) break;
     altForm = false;
     leftAdjust = false;
     np = 0;
@@ -85,7 +90,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
     zeroPad = false;
     plusSign = 0;
     c = *fmt++;
-    
+
     while (true) {
       if (c == '-') {
         leftAdjust = true;
@@ -104,7 +109,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
       }
       c = *fmt++;
     }
-    
+
     width = 0;
 	  if (isDigit(c)) {
 		  while(isDigit(c)) {
@@ -120,13 +125,13 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
 		  }
 	  }
     if (leftAdjust) {
-      zeroPad = false;    
+      zeroPad = false;
     }
-    
+
     prec = -1;
 	  if (c == '.') {
       zeroPad = false;
-		  prec = 0;      
+		  prec = 0;
 		  c = *fmt++;
 		  if (isDigit(c)) {
 		    while(isDigit(c)) {
@@ -144,25 +149,25 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
       isLong = true;
       c = *fmt++;
     }
-    
+
     if (!c) break;
-   
+
     str = buf + sizeof(buf);
     ptr = str;
     switch(c) {
       case 'c':
         *--str = va_arg(ap, int);
         break;
-        
+
       case 's':
         str = va_arg(ap, char *);
         if (!str) {
           str = (char*)"(null)";
         }
         ns = strlen(str);
-        ptr = str + (prec >= 0 && (size_t)prec < ns ? prec : ns);    
+        ptr = str + (prec >= 0 && (size_t)prec < ns ? prec : ns);
         break;
-        
+
       case 'd':
       case 'i':
         ln = isLong ? va_arg(ap, long) : va_arg(ap, int);
@@ -171,13 +176,13 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
             prefix[np++] = '-';
             ln = -ln;
           } else if (plusSign) {
-            prefix[np++] = plusSign;            
+            prefix[np++] = plusSign;
           }
           str = fmtUnsigned(str, ln, 10, true);
           nz = prec + str - ptr;
         }
         break;
-        
+
 #if PRINTF_USE_FLOAT > 1
       case 'e':
       case 'E':
@@ -186,40 +191,40 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
         f = va_arg(ap, double);
         if (f < 0) {
           f = -f;
-          prefix[np++] = '-';          
+          prefix[np++] = '-';
         } else if (plusSign) {
-          prefix[np++] = plusSign;           
+          prefix[np++] = plusSign;
         }
         str = fmtDouble(str, f, prec < 0 ? 6 : prec, altForm, c);
         break;
-#elif PRINTF_USE_FLOAT > 0        
+#elif PRINTF_USE_FLOAT > 0
       case 'f':
       case 'F':
         f = va_arg(ap, double);
         if (f < 0) {
           f = -f;
-          prefix[np++] = '-';          
+          prefix[np++] = '-';
         } else if (plusSign) {
-          prefix[np++] = plusSign;           
+          prefix[np++] = plusSign;
         }
         str = fmtDouble(str, f, prec < 0 ? 6 : prec, altForm);
         break;
-#endif  // PRINTF_USE_FLOAT 
-     
+#endif  // PRINTF_USE_FLOAT
+
       case 'o':
         base = 8;
         goto printUnsigned;
-        
+
       case 'u':
         base = 10;
         altForm = false;
         goto printUnsigned;
-        
+
       case 'x':
-      case 'X':    
+      case 'X':
         base = 16;
         goto printUnsigned;
-        
+
       printUnsigned:
         ln = isLong ? va_arg(ap, long) : va_arg(ap, int);
         if (prec || ln) {
@@ -231,11 +236,11 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
             *--str = '0';
           } else {
             prefix[np++] = '0';
-            prefix[np++] = c;            
+            prefix[np++] = c;
           }
         }
         break;
-        
+
       default:
         *--str = c;
         break;
@@ -284,7 +289,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
       }
     }
 	}
-  va_end(ap); 
+  va_end(ap);
   return nc;
  fail:
   va_end(ap);
@@ -293,7 +298,7 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
 //-----------------------------------------------------------------------------
 /** Formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] fmt format string.
  *
  * \return number of character printed for success else a negative value.
@@ -301,23 +306,23 @@ int vfprintf(F* file, const char *fmt, va_list ap) {
 template<typename T>
 int fprintf(T *file, const char* fmt, ...) {
   va_list ap;
-	va_start(ap, fmt);  
+	va_start(ap, fmt);
   return vfprintf(file, fmt, ap);
 }
 //-----------------------------------------------------------------------------
 /** Minimal formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] fmt format string.
  * \param[in] ap argument list.
  *
  * \return number of character printed for success else a negative value.
  */
-template<typename F> 
+template<typename F>
 int vmprintf(F* file, const char *fmt, va_list ap) {
   char buf[15];
   char* ptr;
-  char* str;  
+  char* str;
   bool isLong;
   char c;
   int nc = 0;
@@ -333,7 +338,7 @@ int vmprintf(F* file, const char *fmt, va_list ap) {
     }
     if (!c) {
       break;
-    }      
+    }
     c = *fmt++;
     if (c == 'l') {
       isLong = true;
@@ -344,33 +349,33 @@ int vmprintf(F* file, const char *fmt, va_list ap) {
     if (!c) {
       break;
     }
-    ptr = str = buf + sizeof(buf);   
+    ptr = str = buf + sizeof(buf);
     switch (c) {
       case 'c':
         *--str = va_arg(ap, int);
         break;
-        
+
       case 's':
         str = va_arg(ap, char*);
         ptr = str ? str + strlen(str) : nullptr;
         break;
-        
+
       case 'd':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtSigned(str, n, 10, true);
         break;
-        
-      case 'u':  
+
+      case 'u':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtUnsigned(str, n, 10, true);
         break;
-        
+
       case 'x':
-      case 'X':    
+      case 'X':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtUnsigned(str, n, 16, c == 'X');
         break;
-        
+
       default:
         *--str = c;;
         break;
@@ -379,12 +384,12 @@ int vmprintf(F* file, const char *fmt, va_list ap) {
     nc += file->write(str, ns);
   }
   va_end(ap);
-  return nc;  
+  return nc;
 }
 //-----------------------------------------------------------------------------
 /** Minimal formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] fmt format string.
  *
  * \return number of character printed for success else a negative value.
@@ -393,26 +398,26 @@ int vmprintf(F* file, const char *fmt, va_list ap) {
 template<typename T>
 int mprintf(T *file, const char* fmt, ...) {
   va_list ap;
-	va_start(ap, fmt);  
+	va_start(ap, fmt);
   return vmprintf(file, fmt, ap);
 }
-#if ENABLE_ARDUINO_FEATURES 
+#if ENABLE_ARDUINO_FEATURES
 //-----------------------------------------------------------------------------
 /** Minimal formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] ifsh format string using F() macro.
- * \param[in] ap argument list. 
+ * \param[in] ap argument list.
  *
  * \return number of character printed for success else a negative value.
  */
 template<typename F>
-int vmprintf(F file, const __FlashStringHelper *ifsh, va_list ap) { 
+int vmprintf(F file, const __FlashStringHelper *ifsh, va_list ap) {
   bool isLong;
   char buf[15];
   char c;
   char* ptr;
-  char* str;  
+  char* str;
   size_t ns;
   int nc = 0;
   long n;
@@ -440,28 +445,28 @@ int vmprintf(F file, const __FlashStringHelper *ifsh, va_list ap) {
       case 'c':
         *--str = va_arg(ap, int);
         break;
-        
+
       case 's':
         str = va_arg(ap, char*);
         ptr = str ? str + strlen(str) : nullptr;
         break;
-        
+
       case 'd':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtSigned(str, n, 10, true);
         break;
-        
-      case 'u':  
+
+      case 'u':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtUnsigned(str, n, 10, true);
         break;
-        
+
       case 'x':
-      case 'X':    
+      case 'X':
         n = isLong ? va_arg(ap, long) : va_arg(ap, int);
         str = fmtUnsigned(str, n, 16, c == 'X');
         break;
-        
+
       default:
         *--str = c;;
         break;
@@ -470,12 +475,12 @@ int vmprintf(F file, const __FlashStringHelper *ifsh, va_list ap) {
     nc += file->write(str, ns);
   }
   va_end(ap);
-  return nc;    
+  return nc;
 }
 //-----------------------------------------------------------------------------
 /** Minimal formatted print.
  *
- * \param[in] file destination file or device. 
+ * \param[in] file destination file or device.
  * \param[in] ifsh format string using F() macro.
  *
  * \return number of character printed for success else a negative value.
@@ -486,5 +491,5 @@ int mprintf(F* file, const __FlashStringHelper *ifsh, ...) {
 	va_start(ap, ifsh);
   return vmprintf(file, ifsh, ap);
 }
-#endif  // ENABLE_ARDUINO_FEATURES 
+#endif  // ENABLE_ARDUINO_FEATURES
 #endif  // PrintTemplates_h

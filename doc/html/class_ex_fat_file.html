@@ -156,12 +156,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0ab0a50c96396f91a0ac5d3b09314a67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fe5bf83792a9e28cde1d91a60ef3ea5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a1fe5bf83792a9e28cde1d91a60ef3ea5">isOpen</a> () const </td></tr>
 <tr class="separator:a1fe5bf83792a9e28cde1d91a60ef3ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa9b8315b335f8b56cc53c80b75a45ac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#afa9b8315b335f8b56cc53c80b75a45ac">isReadable</a> () const </td></tr>
+<tr class="separator:afa9b8315b335f8b56cc53c80b75a45ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9af527ce5bfc48633fc2795571887177"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a9af527ce5bfc48633fc2795571887177">isReadOnly</a> () const </td></tr>
 <tr class="separator:a9af527ce5bfc48633fc2795571887177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee8e2c332cbb63c2db9006412dd9a6a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#aee8e2c332cbb63c2db9006412dd9a6a0">isRoot</a> () const </td></tr>
 <tr class="separator:aee8e2c332cbb63c2db9006412dd9a6a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf2bc4492925ac9dcf1c98b6915c8dd4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#aaf2bc4492925ac9dcf1c98b6915c8dd4">isSubDir</a> () const </td></tr>
 <tr class="separator:aaf2bc4492925ac9dcf1c98b6915c8dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cbb24dcf6d7e5cd5cb57341d23a1242"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a0cbb24dcf6d7e5cd5cb57341d23a1242">isWritable</a> () const </td></tr>
+<tr class="separator:a0cbb24dcf6d7e5cd5cb57341d23a1242"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30766e24bfc7b9d7a042b16edb30624e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a30766e24bfc7b9d7a042b16edb30624e">ls</a> (print_t *pr)</td></tr>
 <tr class="separator:a30766e24bfc7b9d7a042b16edb30624e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a846c1e8837eb38de12d3a3d518c68b5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ex_fat_file.html#a846c1e8837eb38de12d3a3d518c68b5e">ls</a> (print_t *pr, uint8_t flags, uint8_t indent=0)</td></tr>
@@ -361,7 +365,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
       </table>
 </div><div class="memdoc">
 <p>Close a file and force cached data and directory information to be written to the storage device.</p>
-<dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The value true is returned for success and the value false is returned for failure.</dd></dl>
+<p>Copyright (c) 20011-2017 Bill Greiman This file is part of the <a class="el" href="class_sd_fs.html" title="SD file system class for FAT16, FAT32, and exFAT volumes. ">SdFs</a> library for SD memory cards.</p>
+<p>MIT License</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
 
 </div>
 </div>
@@ -786,6 +795,30 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
 
 </div>
 </div>
+<a class="anchor" id="afa9b8315b335f8b56cc53c80b75a45ac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExFatFile::isReadable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True file is writable. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a9af527ce5bfc48633fc2795571887177"></a>
 <div class="memitem">
 <div class="memproto">
@@ -855,6 +888,30 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>True if this is a subdirectory. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0cbb24dcf6d7e5cd5cb57341d23a1242"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExFatFile::isWritable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True file is writable. </dd></dl>
 
 </div>
 </div>
@@ -1053,7 +1110,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
 <p>O_AT_END - Set the initial position at the end of the file.</p>
 <p>O_CREAT - If the file exists, this flag has no effect except as noted under O_EXCL below. Otherwise, the file shall be created</p>
 <p>O_EXCL - If O_CREAT and O_EXCL are set, <a class="el" href="class_ex_fat_file.html#aafa6d024fa4a2e779a381de668b1427a">open()</a> shall fail if the file exists.</p>
-<p>O_SYNC - Call <a class="el" href="class_ex_fat_file.html#a2cb3638069afd2d01b79e5dff1a66f55">sync()</a> after each write. This flag should not be used with <a class="el" href="class_ex_fat_file.html#afd011d17d66707623c28927a63f81015">write(uint8_t)</a> or any functions do character at a time writes since <a class="el" href="class_ex_fat_file.html#a2cb3638069afd2d01b79e5dff1a66f55">sync()</a> will be called after each byte.</p>
 <p>O_TRUNC - If the file exists and is a regular file, and the file is successfully opened and is not read only, its length shall be truncated to 0.</p>
 <p>WARNING: A given file must not be opened by more than one file object or file corruption may occur.</p>
 <dl class="section note"><dt>Note</dt><dd>Directory files must be opened read only. Write and truncation is not allowed for directory files.</dd></dl>
@@ -1478,7 +1534,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes printed. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of bytes printed.</dd></dl>
+<p>Copyright (c) 20011-2017 Bill Greiman This file is part of the <a class="el" href="class_sd_fs.html" title="SD file system class for FAT16, FAT32, and exFAT volumes. ">SdFs</a> library for SD memory cards.</p>
+<p>MIT License</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
 
 </div>
 </div>
@@ -2021,7 +2082,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ExFatVolume</b></td>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 31 2017 05:07:35 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 1 2017 03:20:54 for SdFs by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

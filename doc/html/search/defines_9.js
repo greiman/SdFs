@@ -1,6 +1,7 @@
 var searchData=
 [
   ['use_5fexfat_5fbitmap_5fcache',['USE_EXFAT_BITMAP_CACHE',['../_fs_config_8h.html#a8d3fca2607182c1ba389dd61c283a3e2',1,'FsConfig.h']]],
+  ['use_5ffat_5ffile_5fflag_5fcontiguous',['USE_FAT_FILE_FLAG_CONTIGUOUS',['../_fs_config_8h.html#ad42a354208ecb245adfc238266a612e5',1,'FsConfig.h']]],
   ['use_5flong_5ffile_5fnames',['USE_LONG_FILE_NAMES',['../_fs_config_8h.html#a2536b194b3b007604a39e8526e108b52',1,'USE_LONG_FILE_NAMES():&#160;FsConfig.h'],['../_fat_lib_config_8h.html#a2536b194b3b007604a39e8526e108b52',1,'USE_LONG_FILE_NAMES():&#160;FatLibConfig.h']]],
   ['use_5fmulti_5fsector_5fio',['USE_MULTI_SECTOR_IO',['../_fs_config_8h.html#ae477a983188d4370faff32b07a5cfacb',1,'USE_MULTI_SECTOR_IO():&#160;FsConfig.h'],['../_fat_lib_config_8h.html#ae477a983188d4370faff32b07a5cfacb',1,'USE_MULTI_SECTOR_IO():&#160;FatLibConfig.h']]],
   ['use_5fsd_5fcrc',['USE_SD_CRC',['../_fs_config_8h.html#af2e76ffb2fdb830175abf513dd640fdd',1,'FsConfig.h']]],
