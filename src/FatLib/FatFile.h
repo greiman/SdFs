@@ -32,6 +32,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include "FatLibConfig.h"
+#include "../common/FmtNumber.h"
 #include "../common/FsApiConstants.h"
 #include "../common/FsDateTime.h"
 #include "../common/FsStructs.h"
@@ -570,31 +571,58 @@ class FatFile {
    * \param[in] prec Number of digits after decimal point.
    * \return The number of bytes written or -1 if an error occurs.
    */
-  int printField(float value, char term, uint8_t prec = 2);
+  size_t printField(double value, char term, uint8_t prec = 2) {
+    char buf[24];
+    char* str = buf + sizeof(buf);
+    if (term) {
+      *--str = term;
+      if (term == '\n') {
+        *--str = '\r';
+      }
+    }
+    str = fmtDouble(str, value, prec, false);
+    return write(str, buf + sizeof(buf) - str);
+  }
+  /** Print a number followed by a field terminator.
+   * \param[in] value The number to be printed.
+   * \param[in] term The field terminator.  Use '\\n' for CR LF.
+   * \param[in] prec Number of digits after decimal point.
+   * \return The number of bytes written or -1 if an error occurs.
+   */
+  size_t printField(float value, char term, uint8_t prec = 2) {
+    return printField(static_cast<double>(value), term, prec);
+  }
   /** Print a number followed by a field terminator.
    * \param[in] value The number to be printed.
    * \param[in] term The field terminator.  Use '\\n' for CR LF.
    * \return The number of bytes written or -1 if an error occurs.
    */
-  int printField(int16_t value, char term);
-  /** Print a number followed by a field terminator.
-   * \param[in] value The number to be printed.
-   * \param[in] term The field terminator.  Use '\\n' for CR LF.
-   * \return The number of bytes written or -1 if an error occurs.
-   */
-  int printField(uint16_t value, char term);
-  /** Print a number followed by a field terminator.
-   * \param[in] value The number to be printed.
-   * \param[in] term The field terminator.  Use '\\n' for CR LF.
-   * \return The number of bytes written or -1 if an error occurs.
-   */
-  int printField(int32_t value, char term);
-  /** Print a number followed by a field terminator.
-   * \param[in] value The number to be printed.
-   * \param[in] term The field terminator.  Use '\\n' for CR LF.
-   * \return The number of bytes written or -1 if an error occurs.
-   */
-  int printField(uint32_t value, char term);
+  template <typename Type>
+  size_t printField(Type value, char term) {
+    char sign = 0;
+    char buf[3*sizeof(Type) + 3];
+    char* str = buf + sizeof(buf);
+
+    if (term) {
+      *--str = term;
+      if (term == '\n') {
+        *--str = '\r';
+      }
+    }
+    if (value < 0) {
+      value = -value;
+      sign = '-';
+    }
+    if (sizeof(Type) < 4) {
+      str = fmtBase10(str, (uint16_t)value);
+    } else {
+      str = fmtBase10(str, (uint32_t)value);
+    }
+    if (sign) {
+      *--str = sign;
+    }
+    return write(str, &buf[sizeof(buf)] - str);
+  }
   /** Print a file's modify date and time
    *
    * \param[in] pr Print stream for output.

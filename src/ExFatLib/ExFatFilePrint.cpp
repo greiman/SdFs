@@ -135,48 +135,4 @@ int ExFatFile::mprintf(const __FlashStringHelper *ifsh, ...) {
   return vmprintf(this, ifsh, ap);
 }
 #endif  // ENABLE_ARDUINO_FEATURES
-//------------------------------------------------------------------------------
-/** Template for ExFatFile::printField() */
-template <typename Type>
-static int printFieldT(ExFatFile* file, char sign, Type value, char term) {
-  char buf[3*sizeof(Type) + 3];
-  char* str = buf + sizeof(buf);
 
-  if (term) {
-    *--str = term;
-    if (term == '\n') {
-      *--str = '\r';
-    }
-  }
-  str = fmtBase10(str, value);
-  if (sign) {
-    *--str = sign;
-  }
-  return file->write(str, &buf[sizeof(buf)] - str);
-}
-//------------------------------------------------------------------------------
-int ExFatFile::printField(uint16_t value, char term) {
-  return printFieldT(this, 0, value, term);
-}
-//------------------------------------------------------------------------------
-int ExFatFile::printField(int16_t value, char term) {
-  char sign = 0;
-  if (value < 0) {
-    sign = '-';
-    value = -value;
-  }
-  return printFieldT(this, sign, (uint16_t)value, term);
-}
-//------------------------------------------------------------------------------
-int ExFatFile::printField(uint32_t value, char term) {
-  return printFieldT(this, 0, value, term);
-}
-//------------------------------------------------------------------------------
-int ExFatFile::printField(int32_t value, char term) {
-  char sign = 0;
-  if (value < 0) {
-    sign = '-';
-    value = -value;
-  }
-  return printFieldT(this, sign, (uint32_t)value, term);
-}

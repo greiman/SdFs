@@ -136,9 +136,13 @@ bool FatFile::contiguousRange(uint32_t* bgnSector, uint32_t* endSector) {
 #if USE_FAT_FILE_FLAG_CONTIGUOUS
       m_flags |= FILE_FLAG_CONTIGUOUS;
 #endif  // USE_FAT_FILE_FLAG_CONTIGUOUS
-      *bgnSector = m_vol->clusterStartSector(m_firstCluster);
-      *endSector = m_vol->clusterStartSector(c)
-                  + m_vol->sectorsPerCluster() - 1;
+      if (bgnSector) {
+        *bgnSector = m_vol->clusterStartSector(m_firstCluster);
+      }
+      if (endSector) {
+        *endSector = m_vol->clusterStartSector(c)
+                     + m_vol->sectorsPerCluster() - 1;
+      }
       return true;
     }
   }

@@ -66,6 +66,12 @@ class FsFile {
     return m_fFile ? m_fFile->available() :
            m_xFile ? m_xFile->available() : 0;
   }
+
+  /** Set writeError to zero */
+  void clearWriteError() {
+    if (m_fFile) m_fFile->clearWriteError();
+    if (m_xFile) m_xFile->clearWriteError();
+  }
   /** Close a file and force cached data and directory information
    *  to be written to the storage device.
    *
@@ -137,6 +143,12 @@ class FsFile {
     *name = 0;
     return m_fFile ? m_fFile->getName(name, len) :
            m_xFile ? m_xFile->getName(name, len) : 0;
+  }
+
+  /** \return value of writeError */
+  bool getWriteError() {
+    return m_fFile ? m_fFile->getWriteError() :
+           m_xFile ? m_xFile->getWriteError() : true;
   }
   /** \return True if this is a directory else false. */
   bool isDir() {
@@ -352,6 +364,35 @@ class FsFile {
   }
   /** \return the current file position. */
   uint64_t position() {return curPosition();}
+   /** Print a number followed by a field terminator.
+   * \param[in] value The number to be printed.
+   * \param[in] term The field terminator.  Use '\\n' for CR LF.
+   * \param[in] prec Number of digits after decimal point.
+   * \return The number of bytes written or -1 if an error occurs.
+   */
+  size_t printField(double value, char term, uint8_t prec = 2) {
+    return m_fFile ? m_fFile->printField(value, term, prec) :
+           m_xFile ? m_xFile->printField(value, term, prec) : 0;
+  }
+  /** Print a number followed by a field terminator.
+   * \param[in] value The number to be printed.
+   * \param[in] term The field terminator.  Use '\\n' for CR LF.
+   * \param[in] prec Number of digits after decimal point.
+   * \return The number of bytes written or -1 if an error occurs.
+   */
+  size_t printField(float value, char term, uint8_t prec = 2) {
+     return printField(static_cast<double>(value), term, prec);
+  }
+  /** Print a number followed by a field terminator.
+   * \param[in] value The number to be printed.
+   * \param[in] term The field terminator.  Use '\\n' for CR LF.
+   * \return The number of bytes written or -1 if an error occurs.
+   */
+  template<typename Type>
+  size_t printField(Type value, char term) {
+    return m_fFile ? m_fFile->printField(value, term) :
+           m_xFile ? m_xFile->printField(value, term) : 0;
+  }
   /** Read the next byte from a file.
    *
    * \return For success return the next byte in the file as an int.

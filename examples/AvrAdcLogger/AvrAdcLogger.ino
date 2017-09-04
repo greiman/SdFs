@@ -1,9 +1,6 @@
 /**
  * This program logs data from the Arduino ADC to a binary file.
  *
- * Your SD must be formatted exFAT. SDXC cards are formated exFAT. Smaller 
- * cards can be formatted exFAT by using the ExFatFormatter example.
- *
  * Samples are logged at regular intervals. Each Sample consists of the ADC
  * values for the analog pins defined in the PIN_LIST array.  The pins numbers
  * may be in any order.
@@ -13,7 +10,7 @@
  *
  * If your SD card has a long write latency, it may be necessary to use
  * slower sample rates.  Using a Mega Arduino helps overcome latency
- * problems since 48 64 byte buffer blocks will be used.
+ * problems since more 64 byte buffer blocks will be used.
  *
  * Each 64 byte data block in the file has a four byte header followed by up
  * to 60 bytes of data. (60 values in 8-bit mode or 30 values in 10-bit mode)
@@ -24,7 +21,6 @@
 #ifdef __AVR__
 #include <SPI.h>
 #include "SdFs.h"
-#include "FreeStack.h"
 #include "AvrAdcLogger.h"
 
 // Save SRAM if 328.
@@ -33,6 +29,10 @@
 MinimumSerial MinSerial;
 #define Serial MinSerial
 #endif  // __AVR_ATmega328P__
+//------------------------------------------------------------------------------
+// SD_FAT_TYPE = 1 for FAT16/FAT32, 2 for exFAT, 3 for FAT16/FAT32 and exFAT.
+// Note: Uno will not support SD_FAT_TYPE = 3.
+#define SD_FAT_TYPE 1
 //------------------------------------------------------------------------------
 // Pin definitions.
 //
@@ -62,6 +62,42 @@ const float SAMPLE_INTERVAL = 1.0/SAMPLE_RATE;
 // time jitter.
 #define ROUND_SAMPLE_INTERVAL 1
 //------------------------------------------------------------------------------
+// Reference voltage.  See the processor data-sheet for reference details.
+// uint8_t const ADC_REF = 0; // External Reference AREF pin.
+uint8_t const ADC_REF = (1 << REFS0);  // Vcc Reference.
+// uint8_t const ADC_REF = (1 << REFS1);  // Internal 1.1 (only 644 1284P Mega)
+// uint8_t const ADC_REF = (1 << REFS1) | (1 << REFS0);  // Internal 1.1 or 2.56
+//------------------------------------------------------------------------------
+// File definitions.
+//
+// Maximum file size in bytes.
+// The program creates a contiguous file with MAX_FILE_SIZE_MiB bytes.
+// The file will be truncated if logging is stopped early.
+const uint32_t MAX_FILE_SIZE_MiB = 100;  // 100 MiB file.
+
+// log file name.  Integer field before dot will be incremented.
+#define LOG_FILE_NAME "AvrAdc00.bin"
+
+// Maximum length name including zero byte.
+const size_t NAME_DIM = 40;
+
+// Set RECORD_EIGHT_BITS non-zero to record only the high 8-bits of the ADC.
+#define RECORD_EIGHT_BITS 0
+//------------------------------------------------------------------------------
+// FIFO size definition. Use a multiple of 512 bytes for best performance.
+//
+#if RAMEND < 0X8FF
+#error SRAM too small
+#elif RAMEND < 0X10FF
+const size_t FIFO_SIZE_BYTES = 512;
+#elif RAMEND < 0X20FF
+const size_t FIFO_SIZE_BYTES = 4*512;
+#elif RAMEND < 0X40FF
+const size_t FIFO_SIZE_BYTES = 12*512;
+#else  // RAMEND
+const size_t FIFO_SIZE_BYTES = 16*512;
+#endif  // RAMEND
+//------------------------------------------------------------------------------
 // ADC clock rate.
 // The ADC clock rate is normally calculated from the pin count and sample
 // interval.  The calculation attempts to use the lowest possible ADC clock
@@ -75,42 +111,6 @@ const float SAMPLE_INTERVAL = 1.0/SAMPLE_RATE;
 // #define ADC_PRESCALER 5 // F_CPU/32  500 kHz on an Uno
 // #define ADC_PRESCALER 4 // F_CPU/16 1000 kHz on an Uno
 // #define ADC_PRESCALER 3 // F_CPU/8  2000 kHz on an Uno (8-bit mode only)
-//------------------------------------------------------------------------------
-// Reference voltage.  See the processor data-sheet for reference details.
-// uint8_t const ADC_REF = 0; // External Reference AREF pin.
-uint8_t const ADC_REF = (1 << REFS0);  // Vcc Reference.
-// uint8_t const ADC_REF = (1 << REFS1);  // Internal 1.1 (only 644 1284P Mega)
-// uint8_t const ADC_REF = (1 << REFS1) | (1 << REFS0);  // Internal 1.1 or 2.56
-//------------------------------------------------------------------------------
-// File definitions.
-//
-// Maximum file size in bytes.
-// The program creates a contiguous file with MAX_FILE_SIZE bytes.
-// The file will be truncated if logging is stopped early.
-const uint32_t MAX_FILE_SIZE = 1024UL*1024*1024;  // 1GiB
-
-// log file name.  Integer field before dot will be incremented.
-#define LOG_FILE_NAME "AvrAdc00.bin"
-
-// Maximum length name including zero byte.
-const size_t NAME_DIM = 40;
-
-// Set RECORD_EIGHT_BITS non-zero to record only the high 8-bits of the ADC.
-#define RECORD_EIGHT_BITS 0
-//------------------------------------------------------------------------------
-// Fifo size definition. Use a multiple of 512 bytes for best performance.
-//
-#if RAMEND < 0X8FF
-#error SRAM too small
-#elif RAMEND < 0X10FF
-const size_t FIFO_SIZE_BYTES = 512;
-#elif RAMEND < 0X20FF
-const size_t FIFO_SIZE_BYTES = 4*512;
-#elif RAMEND < 0X40FF
-const size_t FIFO_SIZE_BYTES = 12*512;
-#else  // RAMEND
-const size_t FIFO_SIZE_BYTES = 16*512;
-#endif  // RAMEND
 //==============================================================================
 // End of configuration constants.
 //==============================================================================
@@ -129,6 +129,8 @@ const uint16_t ISR_SETUP_ADC = PIN_COUNT > 1 ? 100 : 0;
 // Maximum cycles for timer0 system interrupt, millis, micros.
 const uint16_t ISR_TIMER0 = 160;
 //==============================================================================
+const uint32_t MAX_FILE_SIZE = MAX_FILE_SIZE_MiB << 20;
+
 // Select fastest interface.
 #if ENABLE_DEDICATED_SPI
 #define SD_CONFIG SdSpiConfig(SD_CS_PIN, DEDICATED_SPI)
@@ -136,10 +138,22 @@ const uint16_t ISR_TIMER0 = 160;
 #define SD_CONFIG SdSpiConfig(SD_CS_PIN, SHARED_SPI)
 #endif  // ENABLE_DEDICATED_SPI
 
-SdExFat sd;
+#if SD_FAT_TYPE == 1
+typedef SdFat sd_t;
+typedef File file_t;
+#elif SD_FAT_TYPE == 2
+typedef SdExFat sd_t;
+typedef ExFile file_t;
+#elif SD_FAT_TYPE == 3
+typedef SdFs sd_t;
+typedef FsFile file_t;
+#else  // SD_FAT_TYPE
+#error Invalid SD_FAT_TYPE
+#endif  // SD_FAT_TYPE
 
-// Use ExFatFAT base file to save SRAM.
-ExFatFile binFile;
+sd_t sd;
+
+file_t binFile;
 
 char binName[] = LOG_FILE_NAME;
 
@@ -151,16 +165,16 @@ const size_t BLOCK_MAX_COUNT = PIN_COUNT*(DATA_DIM16/PIN_COUNT);
 typedef block16_t block_t;
 #endif // RECORD_EIGHT_BITS
 
-// Size of fifo in blocks.
-size_t const fifoSize = FIFO_SIZE_BYTES/sizeof(block_t);
-block_t fifoBuffer[fifoSize]; 
+// Size of FIFO in blocks.
+size_t const FIFO_DIM = FIFO_SIZE_BYTES/sizeof(block_t);
+block_t fifoBuffer[FIFO_DIM]; 
 volatile size_t fifoCount = 0; // volatile - shared, ISR and background.
 block_t* const fifoFirst = fifoBuffer;
 block_t* fifoHead = nullptr;  // Only accessed by ISR during logging.
 block_t* fifoTail = nullptr;  // Only accessed by writer during logging.
-block_t* const fifoLast = fifoBuffer + fifoSize -1;
+block_t* const fifoLast = fifoBuffer + FIFO_DIM -1;
 
-// Advance fifo head or tail pointer.
+// Advance FIFO head or tail pointer.
 inline block_t* fifoNext(block_t* ptr) {
   return ptr < fifoLast ? ptr + 1 : fifoFirst;
 }
@@ -196,7 +210,7 @@ ISR(ADC_vect) {
 #endif  // RECORD_EIGHT_BITS
 
   if (!isrBuf) {
-    if (fifoCount < fifoSize) {
+    if (fifoCount < FIFO_DIM) {
       isrBuf = fifoHead;
     } else {
       // no buffers - count overrun
@@ -264,15 +278,46 @@ void fatalBlink() {
 }
 //------------------------------------------------------------------------------
 void errorHalt() {
-  if (sd.sdErrorCode()) {
-    // Print minimal error data.
-    // sd.printSdErrorCode(&Serial);
-    // Print extended error info - uses about 1600 extra bytes of flash.
-    sd.printSdError(&Serial);
-  }
+  // Print minimal error data.
+  // sd.printSdErrorCode(&Serial);
+  // Print extended error info - uses about 1600 extra bytes of flash.
+  sd.printSdError(&Serial);
   // Try to save data.
   binFile.close();
   fatalBlink();
+}
+//==============================================================================
+// End heap - stack begin.
+char* heapEnd() {
+  // Boundary between stack and heap.
+  extern char *__brkval;
+  //End of bss section.
+  extern char __bss_end;  
+  return __brkval ? __brkval : &__bss_end;
+}
+//------------------------------------------------------------------------------
+// Fill stack with 0X55.
+void avrFillStack() {
+  char* p = heapEnd();
+  char* end = reinterpret_cast<char*>(SP) - 10;
+  while (p < end) {
+    *p++ = 0X55;
+  }
+}
+//------------------------------------------------------------------------------
+// Check unused stack.  Assumes no use of dynamic memory with "new" or malloc.
+size_t avrUnusedStack() {
+  char* p = heapEnd();
+  char* end = reinterpret_cast<char*>(SP) - 10;
+  while(p < end && *p == 0X55) {
+    p++;
+  }
+  return p - heapEnd();
+}
+//------------------------------------------------------------------------------
+void printUnusedStack() {
+  Serial.print(F("\nUnused stack: "));
+  Serial.println(avrUnusedStack());
 }
 //==============================================================================
 #if ADPS0 != 0 || ADPS1 != 1 || ADPS2 != 2
@@ -431,6 +476,62 @@ inline void adcStop() {
   ADCSRA = 0;
 }
 //------------------------------------------------------------------------------
+// Fast buffered print.
+class BufferedPrint {
+ public:
+  BufferedPrint() : m_pr(0), m_in(0) {}
+  
+  explicit BufferedPrint(Print* pr) : m_pr(pr), m_in(0) {};  
+  
+  void begin(Print* pr) {
+    m_pr = pr;
+  }
+
+  template<typename Type>
+  bool print(Type n, char term) {
+    char buf[sizeof(Type) < 4 ? 8 : 13];
+    char* str = buf + sizeof(buf);
+    
+    if (term) {
+      *--str = term;
+      if (term == '\n') {
+        *--str = '\r';
+      }
+    }
+    Type p = n < 0 ? -n : n;
+    if (sizeof(Type) <= 2) {
+      str = fmtBase10(str, (uint16_t)p);
+    } else {
+      str = fmtBase10(str, (uint32_t)p);      
+    }
+    if (n < 0){
+      *--str = '-';
+    }
+    return write((uint8_t*)str, buf + sizeof(buf) - str);
+  }
+
+  bool sync() {
+    if (!m_pr || m_pr->write(m_buf, m_in) != m_in) {
+      return false;
+    }
+    m_in = 0;
+    return true;
+  }
+  
+  bool write(uint8_t* p, uint8_t n) {
+    if ((n + m_in) >= sizeof(m_buf) && !sync()) {
+      return false;
+    }
+    memcpy(m_buf + m_in, p, n);
+    m_in += n;
+    return true;
+  }
+ private:
+  Print* m_pr;
+  uint8_t m_in;
+  uint8_t m_buf[64];
+};
+//------------------------------------------------------------------------------
 // Convert binary file to csv file.
 void binaryToCsv() {
   uint8_t lastPct = 0;
@@ -438,7 +539,8 @@ void binaryToCsv() {
   metadata_t* pm;
   uint32_t t0 = millis();
   char csvName[NAME_DIM];
-  ExFile csvFile;
+  file_t csvFile;
+  BufferedPrint b(&csvFile);
 
   if (!binFile.isOpen()) {
     Serial.println(F("No current binary file"));
@@ -496,9 +598,11 @@ void binaryToCsv() {
         csvFile.print(F("OVERRUN,"));
         csvFile.println(pd->overrun);
       }
-      for (uint16_t j = 0; j < pd->count; j += PIN_COUNT) {
-        for (uint16_t i = 0; i < PIN_COUNT; i++) {
-          csvFile.printField(pd->data[i + j], i == (PIN_COUNT-1) ? '\n' : ',');
+      for (size_t j = 0; j < pd->count; j += PIN_COUNT) {
+        for (size_t i = 0; i < PIN_COUNT; i++) {
+          if (!b.print(pd->data[i + j], i == (PIN_COUNT-1) ? '\n' : ',')) {
+            error("print csvFile failed");
+          }
         }
       }
     }
@@ -512,17 +616,25 @@ void binaryToCsv() {
       }
     }
   }
-  csvFile.close();
+  if (!b.sync() || !csvFile.close()) {
+    error("close csvFile failed");
+  }
   Serial.print(F("Done: "));
   Serial.print(0.001*(millis() - t0));
   Serial.println(F(" Seconds"));
 }
 //------------------------------------------------------------------------------
-void findNextBinName() {
+void createBinFile() {
+  Serial.println();
+  binFile.close();
   while (sd.exists(binName)) {
     char* p = strchr(binName, '.');
+    if (!p) {
+      error("no dot in filename");
+    }
     while (true) {
-      if (p-- < binName || *p < '0' || *p > '9') {
+      p--;
+      if (p < binName || *p < '0' || *p > '9') {
         error("Can't create file name");
       }
       if (p[0] != '9') {
@@ -532,7 +644,18 @@ void findNextBinName() {
       p[0] = '0';
     }
   }
-}  
+  Serial.print(F("Opening: "));
+  Serial.println(binName); 
+  if (!binFile.open(binName, O_RDWR | O_CREAT)) {
+    error("open binName failed");
+  }
+  Serial.print(F("Allocating: "));
+  Serial.print(MAX_FILE_SIZE_MiB);
+  Serial.println(F(" MiB"));  
+  if (!binFile.preAllocate(MAX_FILE_SIZE)) {
+    error("preAllocate failed");
+  }
+}
 //------------------------------------------------------------------------------
 // log data
 void logData() {
@@ -540,31 +663,11 @@ void logData() {
   uint32_t t1;
   uint32_t overruns =0;
   uint32_t count = 0;
-  uint32_t maxLatencyUsec = 0;  
+  uint32_t maxLatencyUsec = 0;
+  size_t maxFifoUse = 0;  
   
-  Serial.println();
-  Serial.print(F("FreeStack: "));
-  Serial.println(FreeStack());
-  
-  // Initialize ADC and timer1.
-  findNextBinName();
+
   adcInit((metadata_t*)fifoBuffer);
-
-  // Delete old tmp file.
-  if (sd.exists(TMP_FILE_NAME)) {
-    Serial.println(F("Deleting tmp file"));
-    if (!sd.remove(TMP_FILE_NAME)) {
-      error("Can't remove tmp file");
-    }
-  }
-  // Create new file.
-  Serial.println(F("Creating new file"));
-  binFile.close();
-  if (!binFile.open(TMP_FILE_NAME, O_CREAT | O_EXCL | O_RDWR) ||
-      !binFile.preAllocate(MAX_FILE_SIZE)) {
-    error("preAllocate failed");
-  }
-
   // Write metadata.
   if (sizeof(block_t) != binFile.write(fifoBuffer, sizeof(block_t))) {
     error("Write metadata failed");
@@ -585,7 +688,10 @@ void logData() {
   adcStart();
   while (1) {
     uint32_t m;
-    if (fifoCount) {
+    noInterrupts();
+    size_t tmpFifoCount = fifoCount;
+    interrupts();
+    if (tmpFifoCount) {
       block_t* pBlock = fifoTail;
       // Write block to SD.
       m = micros();
@@ -596,6 +702,9 @@ void logData() {
       t1 = millis();
       if (m > maxLatencyUsec) {
         maxLatencyUsec = m;
+      }
+      if (tmpFifoCount >maxFifoUse) {
+        maxFifoUse = tmpFifoCount;
       }
       count += pBlock->count;
 
@@ -615,7 +724,7 @@ void logData() {
       fifoCount--;
       interrupts();
       
-      if (binFile.fileSize() >= MAX_FILE_SIZE) {
+      if (binFile.curPosition() >= MAX_FILE_SIZE) {
         // File full so stop ISR calls.
         adcStop();
         break;
@@ -633,17 +742,13 @@ void logData() {
     }       
   }
   // Truncate file if recording stopped early.
-  if (binFile.fileSize() < MAX_FILE_SIZE) {
+  if (binFile.curPosition() < MAX_FILE_SIZE) {
     Serial.println(F("Truncating file"));
+    Serial.flush();
     if (!binFile.truncate()) {
       error("Can't truncate file");
     }
   }
-  if (!binFile.rename(binName)) {
-    error("Can't rename file");
-  }
-  Serial.print(F("File renamed: "));
-  Serial.println(binName);
   Serial.print(F("Max write latency usec: "));
   Serial.println(maxLatencyUsec);
   Serial.print(F("Record time sec: "));
@@ -652,6 +757,10 @@ void logData() {
   Serial.println(count/PIN_COUNT);
   Serial.print(F("Overruns: "));
   Serial.println(overruns);
+  Serial.print(F("FIFO_DIM: "));
+  Serial.println(FIFO_DIM);
+  Serial.print(F("maxFifoUse: "));
+  Serial.println(maxFifoUse + 1);  // include ISR use.
   Serial.println(F("Done"));
 }
 //------------------------------------------------------------------------------
@@ -690,7 +799,8 @@ void printData() {
   Serial.println();
   Serial.println(F("Type any character to stop"));
   delay(1000);
-  while (!Serial.available() && binFile.read(&buf , sizeof(buf)) == sizeof(buf)) {
+  while (!Serial.available() && 
+         binFile.read(&buf , sizeof(buf)) == sizeof(buf)) {
     if (buf.count == 0) {
       break;
     }
@@ -698,7 +808,7 @@ void printData() {
       Serial.print(F("OVERRUN,"));
       Serial.println(buf.overrun);
     }
-    for (uint16_t i = 0; i < buf.count; i++) {
+    for (size_t i = 0; i < buf.count; i++) {
       Serial.print(buf.data[i], DEC);
       if ((i+1)%PIN_COUNT) {
         Serial.print(',');
@@ -745,48 +855,24 @@ void setup(void) {
   Serial.println(F("Type any character to begin."));
   while(!Serial.available()) {}
   
+  avrFillStack();
+  
   // Read the first sample pin to init the ADC.
   analogRead(PIN_LIST[0]);
 
-  Serial.print(F("FreeStack: "));
-  Serial.println(FreeStack());
-  
 #if !ENABLE_DEDICATED_SPI
   Serial.println(F(
     "\nFor best performance edit SdFsConfig.h\n"
     "and set ENABLE_DEDICATED_SPI nonzero")); 
 #endif  // !ENABLE_DEDICATED_SPI
-   
-  // Initialize at the highest speed supported by the board that is
-  // not over 50 MHz. Try a lower speed if SPI errors occur.
+  // Initialize SD.
   if (!sd.begin(SD_CONFIG)) {
-    Serial.println();
-    if (!sd.sdErrorCode()) {
-      Serial.println(F("Is the card formatted exFAT?"));
-    }
     error("sd.begin failed");
-  }
-  
-  // Check for existing tmp file.
-  if (binFile.open(TMP_FILE_NAME, O_RDWR)) {
-    if (binFile.validLength()) {
-      Serial.println(F("Renaming existing tmp file."));
-      findNextBinName();
-      if (!binFile.rename(binName) || !binFile.truncate(binFile.validLength())) {
-        error("rename failed");
-      }
-      binFile.close();
-      Serial.println(binName); 
-    } else {
-      Serial.println(F("Removing corrupt tmp file - check SD integrity"));
-      if (!binFile.remove()) {
-        Serial.println(F("Remove failed - check SD."));
-      }
-    }
   }
 }
 //------------------------------------------------------------------------------
 void loop(void) {
+   printUnusedStack(); 
   // Read any Serial data.
   do {
     delay(10);
@@ -821,6 +907,7 @@ void loop(void) {
   } else if (c == 'p') {
     printData();    
   } else if (c == 'r') {
+    createBinFile();
     logData();
   } else {
     Serial.println(F("Invalid entry"));

@@ -39,8 +39,6 @@ extern char __bss_end;
 static int FreeStack() {
   char* sp = reinterpret_cast<char*>(SP);
   return __brkval ? sp - __brkval : sp - &__bss_end;
-//  char top;
-//  return __brkval ? &top - __brkval : &top - &__bss_end;
 }
 #elif defined(PLATFORM_ID)  // Particle board
 static int FreeStack() {

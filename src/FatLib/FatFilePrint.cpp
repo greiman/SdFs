@@ -25,7 +25,6 @@
 #include <math.h>
 #include "../common/DebugMacros.h"
 #include "FatFile.h"
-#include "../common/FmtNumber.h"
 #include "../common/PrintTemplates.h"
 //------------------------------------------------------------------------------
 static void printHex(print_t* pr, uint8_t w, uint16_t h) {
@@ -139,64 +138,6 @@ size_t FatFile::printCreateDateTime(print_t* pr) {
 
 fail:
   return 0;
-}
-//------------------------------------------------------------------------------
-/** Template for FatFile::printField() */
-template <typename Type>
-static int printFieldT(FatFile* file, char sign, Type value, char term) {
-  char buf[3*sizeof(Type) + 3];
-  char* str = buf + sizeof(buf);
-
-  if (term) {
-    *--str = term;
-    if (term == '\n') {
-      *--str = '\r';
-    }
-  }
-  str = fmtBase10(str, value);
-  if (sign) {
-    *--str = sign;
-  }
-  return file->write(str, &buf[sizeof(buf)] - str);
-}
-//------------------------------------------------------------------------------
-int FatFile::printField(float value, char term, uint8_t prec) {
-  char buf[24];
-  char* str = buf + sizeof(buf);
-  if (term) {
-    *--str = term;
-    if (term == '\n') {
-      *--str = '\r';
-    }
-  }
-  str = fmtDouble(str, value, prec, false);
-  return write(str, buf + sizeof(buf) - str);
-}
-//------------------------------------------------------------------------------
-int FatFile::printField(uint16_t value, char term) {
-  return printFieldT(this, 0, value, term);
-}
-//------------------------------------------------------------------------------
-int FatFile::printField(int16_t value, char term) {
-  char sign = 0;
-  if (value < 0) {
-    sign = '-';
-    value = -value;
-  }
-  return printFieldT(this, sign, (uint16_t)value, term);
-}
-//------------------------------------------------------------------------------
-int FatFile::printField(uint32_t value, char term) {
-  return printFieldT(this, 0, value, term);
-}
-//------------------------------------------------------------------------------
-int FatFile::printField(int32_t value, char term) {
-  char sign = 0;
-  if (value < 0) {
-    sign = '-';
-    value = -value;
-  }
-  return printFieldT(this, sign, (uint32_t)value, term);
 }
 //------------------------------------------------------------------------------
 size_t FatFile::printModifyDateTime(print_t* pr) {

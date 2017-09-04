@@ -70,7 +70,7 @@
  * Enabling dedicated SPI will cost some extra flash and RAM.
  */
 #ifdef __AVR_ATmega328P__
-#define ENABLE_DEDICATED_SPI 0
+#define ENABLE_DEDICATED_SPI 1
 #else  // __AVR_ATmega328P__
 #define ENABLE_DEDICATED_SPI 1
 #endif  // __AVR_ATmega328P__

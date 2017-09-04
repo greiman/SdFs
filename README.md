@@ -1,7 +1,7 @@
-### Warning: This is a pre-beta preview of the SdFs library.
+### Warning: This is an early beta version of the SdFs library.
 
-The SdFs library is in early development and any feature may change or vanish. 
-I am posting this version to get comments.  It will clearly have many bugs.
+The SdFs library is in early development and features may change. 
+It will clearly have bugs. I am posting this version to get comments.  
 
 The SdFs library supports FAT16/FAT32 and exFAT SD cards. It is mostly
 backward compatible with SdFat on FAT16/FAT32 cards.

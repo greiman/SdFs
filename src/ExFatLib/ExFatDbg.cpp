@@ -442,8 +442,9 @@ bool ExFatPartition::printDir(Print* pr, ExFatFile* file) {
     }
     dir = reinterpret_cast<DirGeneric_t*>(buf);
 #else
-    uint32_t nDir = 1 << (m_sectorsPerClusterShift + 4);
-    uint32_t sector = clusterStartSector(m_rootDirectoryCluster);
+  (void)file;
+  uint32_t nDir = 1 << (m_sectorsPerClusterShift + 4);
+  uint32_t sector = clusterStartSector(m_rootDirectoryCluster);
   for (uint32_t iDir = 0; iDir < nDir; iDir++) {
     size_t i = iDir%16;
     if (i == 0) {

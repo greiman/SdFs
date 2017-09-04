@@ -155,5 +155,8 @@ class StreamFile : public Stream, public BaseFile {
   size_t write(uint8_t b) {
     return BaseFile::write(b);
   }
+  size_t write(const uint8_t *buffer, size_t size) {
+    return BaseFile::write(buffer, size);
+  }
 };
 #endif  // ArduinoFiles_h
