@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 20011-2017 Bill Greiman
+ * Copyright (c) 2011-2018 Bill Greiman
  * This file is part of the SdFs library for SD memory cards.
  *
  * MIT License
@@ -646,7 +646,7 @@ size_t ExFatFile::write(const void* buf, size_t nbyte) {
         ns = maxNs;
       }
       n = ns << m_vol->bytesPerSectorShift();
-      if (sector <= m_vol->dataCacheSector()
+      if (m_vol->dataCacheSector() <= sector
           && m_vol->dataCacheSector() < (sector + ns)) {
         // invalidate cache if sector is in cache
         m_vol->dataCacheInvalidate();

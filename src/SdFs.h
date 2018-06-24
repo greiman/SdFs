@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 20011..2017 Bill Greiman
+ * Copyright (c) 2011..2018 Bill Greiman
  * This file is part of the SdFs library for SD memory cards.
  *
  * MIT License
@@ -38,7 +38,7 @@
 #include "FsFile.h"
 //------------------------------------------------------------------------------
 /** SdFs version YYYYMMDD */
-#define SD_FS_DATE 20170815
+#define SD_FS_DATE 20180624
 //==============================================================================
 /**
  * \class SdBase

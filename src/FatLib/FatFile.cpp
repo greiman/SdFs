@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 20011-2017 Bill Greiman
+ * Copyright (c) 2011-2018 Bill Greiman
  * This file is part of the SdFs library for SD memory cards.
  *
  * MIT License
@@ -714,7 +714,7 @@ int FatFile::read(void* buf, size_t nbyte) {
         }
       }
       n = ns << m_vol->bytesPerSectorShift();
-      if (sector <= m_vol->cacheSectorNumber()
+      if (m_vol->cacheSectorNumber() <= sector
           && sector < (m_vol->cacheSectorNumber() + ns)) {
         // flush cache if a sector is in the cache
         if (!m_vol->cacheSyncData()) {
@@ -1350,7 +1350,7 @@ size_t FatFile::write(const void* buf, size_t nbyte) {
         nSector = maxSectors;
       }
       n = nSector << m_vol->bytesPerSectorShift();
-      if (sector <= m_vol->cacheSectorNumber()
+      if (m_vol->cacheSectorNumber() <= sector
           && sector < (m_vol->cacheSectorNumber() + nSector)) {
         // invalidate cache if sector is in cache
         m_vol->cacheInvalidate();
