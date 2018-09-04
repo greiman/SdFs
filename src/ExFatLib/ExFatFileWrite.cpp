@@ -222,6 +222,7 @@ bool ExFatFile::mkdir(ExFatFile* parent, ExName_t* fname) {
   // Set to start of dir
   rewind();
   m_flags = FILE_FLAG_READ | FILE_FLAG_CONTIGUOUS | FILE_FLAG_DIR_DIRTY;
+  return sync();
 
 fail:
   return false;
