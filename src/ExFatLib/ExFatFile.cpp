@@ -592,6 +592,10 @@ int ExFatFile::read(void* buf, size_t count) {
         DBG_FAIL_MACRO;
         goto fail;
       }
+      if(isContiguous()){
+        // we may have crossed a cluster boundary
+        m_curCluster += (clusterOffset + n - 1) >> m_vol->bytesPerClusterShift();
+      }
 #endif  // USE_MULTI_SECTOR_IO
     } else {
       // read single sector
